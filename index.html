@@ -1,0 +1,1196 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="糖尿病診斷與治療決策台：依 ADA Standards of Care 2026 與 ADA/EASD 2026 共識完成診斷、分型、個別化目標與治療選擇，逐條對照台灣健保藥品給付規定（第五節 5.1、第二節 2.16），附十個教學病例。">
+<title>糖尿病診斷與治療決策台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: clinical console — masthead + numbered tabs; workspace = data sheet (left) + live interpretation (right) */
+:root{
+  --paper:#f3f6f6; --panel:#ffffff; --ink:#152224; --ink-2:#47585b; --ink-3:#788a8d; --line:#d3dddd; --line-2:#e6eded;
+  --accent:#17707f; --accent-ink:#ffffff; --accent-soft:#e0f0f2;
+  --go:#2d7a4c; --go-soft:#e2f1e7; --warn:#946708; --warn-soft:#faf0d9; --stop:#b3372b; --stop-soft:#f8e2de;
+  --f-display:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#0e1516; --panel:#162022; --ink:#e3eced; --ink-2:#a2b2b4; --ink-3:#738588; --line:#283537; --line-2:#1e292b;
+  --accent:#6cc3d1; --accent-ink:#082226; --accent-soft:#16313a;
+  --go:#65c48b; --go-soft:#162a1f; --warn:#e4b852; --warn-soft:#2d2612; --stop:#f08a7a; --stop-soft:#381e1a; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#0e1516; --panel:#162022; --ink:#e3eced; --ink-2:#a2b2b4; --ink-3:#738588; --line:#283537; --line-2:#1e292b;
+  --accent:#6cc3d1; --accent-ink:#082226; --accent-soft:#16313a;
+  --go:#65c48b; --go-soft:#162a1f; --warn:#e4b852; --warn-soft:#2d2612; --stop:#f08a7a; --stop-soft:#381e1a; color-scheme:dark }
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.65}
+.wrap{max-width:1260px;margin:0 auto;padding-inline:20px;padding-block:0 56px}
+@media (max-width:520px){.wrap{padding-inline:16px}}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;font-weight:700;letter-spacing:.01em}
+h1{font-size:clamp(24px,3.2vw,32px);line-height:1.25}
+h3{font-size:16.5px}
+h4{margin:0;font-size:14px;font-weight:700}
+p{margin:0}
+.muted{color:var(--ink-2)} .small{font-size:13px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.masthead{padding-block:28px 0;display:grid;gap:8px}
+.masthead .sub{color:var(--ink-2);max-width:80ch}
+.src{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.src span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--ink-2);background:var(--panel)}
+.tabs{display:flex;gap:4px;margin-top:18px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{appearance:none;border:0;background:none;font:inherit;color:var(--ink-2);padding:10px 14px 11px;cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;font-weight:500}
+.tab b{font-family:var(--f-mono);font-weight:500;color:var(--ink-3);margin-right:6px;font-size:13px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab[aria-selected="true"] b{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section.pane{padding-top:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;min-width:0}
+.card>h3{margin-bottom:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.stack{display:grid;gap:16px;min-width:0}
+.field{display:grid;gap:4px;min-width:0;align-content:start}
+.field>.flabel{font-size:12.5px;color:var(--ink-2);font-weight:500}
+.field .hint{font-size:11.5px;color:var(--ink-3);line-height:1.4}
+input[type=number],select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:6px 8px;min-width:0;max-width:100%}
+input[type=number]{width:104px;font-family:var(--f-mono)}
+select{width:100%}
+.u{font-size:12px;color:var(--ink-3);font-family:var(--f-mono);white-space:nowrap}
+.inl{display:flex;gap:6px;align-items:center}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:14px;cursor:pointer;padding:3px 0;line-height:1.5}
+.check input{margin-top:4px;accent-color:var(--accent);flex:none}
+.check.confirm{font-weight:700;color:var(--accent);border-top:1px dashed var(--line);padding-top:8px;margin-top:4px}
+.btn{appearance:none;font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:7px;padding:6px 12px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.sm{font-size:12.5px;padding:3px 10px}
+.pill{display:inline-block;font-size:11.5px;font-weight:500;border-radius:999px;padding:1px 9px;white-space:nowrap;vertical-align:1px}
+.pill.ev{background:var(--accent-soft);color:var(--accent)}
+.pill.go{background:var(--go-soft);color:var(--go)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.stop{background:var(--stop-soft);color:var(--stop)}
+.pill.mute{background:var(--line-2);color:var(--ink-2)}
+.sample{font-size:12px;color:var(--warn);background:var(--warn-soft);border-radius:999px;padding:1px 10px;font-weight:500}
+.note{font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding:4px 0 4px 12px}
+.alert{border-radius:8px;padding:10px 12px;font-size:14px;display:grid;gap:4px}
+.alert.warn{background:var(--warn-soft)} .alert.warn strong{color:var(--warn)}
+.alert.stop{background:var(--stop-soft)} .alert.stop strong{color:var(--stop)}
+.alert.go{background:var(--go-soft)} .alert.go strong{color:var(--go)}
+.alert.info{background:var(--accent-soft)} .alert.info strong{color:var(--accent)}
+ul.plain{margin:6px 0 0;padding-left:18px;display:grid;gap:4px;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font-weight:500;color:var(--ink-2);font-size:12.5px;white-space:nowrap}
+.tablebox{overflow-x:auto}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.two{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:1020px){.two{grid-template-columns:minmax(0,1fr)}}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px}
+@media (max-width:640px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.sub-h{font-size:12.5px;color:var(--ink-2);font-weight:500;margin:14px 0 6px}
+.sub-h:first-child{margin-top:0}
+
+/* status strip */
+.status{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(6px);padding:10px 0;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.status .kbox{font-family:var(--f-mono);font-size:26px;line-height:1;font-weight:500}
+.status .kbox small{font-size:12px;color:var(--ink-3);margin-left:4px}
+.status .grow{flex:1 1 220px;min-width:0}
+.prog{height:7px;border-radius:4px;background:var(--line-2);overflow:hidden;margin-top:5px}
+.prog i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.lvl{font-size:13px;font-weight:700;border-radius:7px;padding:5px 10px}
+.lvl.emergent{background:var(--stop);color:#fff} .lvl.urgent{background:var(--warn-soft);color:var(--warn)} .lvl.routine{background:var(--go-soft);color:var(--go)} .lvl.unknown,.lvl.none{background:var(--line-2);color:var(--ink-2)}
+
+/* guided asks */
+.ask{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:9px;padding:11px 13px;display:grid;gap:8px;background:var(--panel)}
+.ask.now{border-left-color:var(--stop)}
+.ask.later{border-left-color:var(--line)}
+.ask .ah{display:flex;gap:8px;align-items:baseline;justify-content:space-between;flex-wrap:wrap}
+.ask .ah h4{font-size:14.5px}
+.ask .why{font-size:13px;color:var(--ink-2)}
+.ask .fields{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-start}
+.ask .fields .field{flex:0 1 auto}
+.ask .fields .field.wide{flex:1 1 260px}
+.ask .checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px;width:100%}
+@media (max-width:640px){.ask .checks{grid-template-columns:minmax(0,1fr)}}
+.ask .acts{display:flex;gap:8px;flex-wrap:wrap}
+.asklist{display:grid;gap:10px}
+details.more>summary{cursor:pointer;font-size:13px;color:var(--ink-2);padding:4px 0}
+.pend{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:13.5px;padding:5px 0;border-bottom:1px dashed var(--line-2)}
+
+/* ddx */
+.dx{border:1px solid var(--line-2);border-radius:8px;padding:9px 12px;display:grid;gap:4px}
+.dx .dh{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.dx .dh b{font-size:14.5px}
+.dx ul{margin:0;padding-left:18px;font-size:13px;color:var(--ink-2)}
+.dx .nx{font-size:12.8px;color:var(--accent)}
+.dx.confirmed{border-color:var(--go);box-shadow:0 0 0 1px var(--go) inset}
+.dx.likely{border-color:var(--accent)}
+.dx.unlikely{opacity:.62}
+.dxlist{display:grid;gap:8px}
+.final{border-radius:10px;padding:12px 14px;background:var(--go-soft)}
+.final b{color:var(--go);font-size:16px}
+
+/* data sheet */
+details.layer{border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+details.layer+details.layer{margin-top:10px}
+details.layer>summary{list-style:none;cursor:pointer;padding:11px 14px;display:flex;gap:10px;align-items:center}
+details.layer>summary::-webkit-details-marker{display:none}
+details.layer>summary .n{font-family:var(--f-mono);color:var(--accent);font-weight:500;min-width:1.4ch}
+details.layer>summary .t{font-weight:700;flex:1}
+details.layer .lb{padding:2px 14px 14px;display:grid;gap:10px}
+.flash{animation:flash 1.2s ease}
+@keyframes flash{0%{box-shadow:0 0 0 3px var(--accent)}100%{box-shadow:0 0 0 0 transparent}}
+
+/* path */
+ol.path{margin:0;padding:0;list-style:none;display:grid;gap:0}
+ol.path li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;padding:6px 0;font-size:13.8px;border-bottom:1px dashed var(--line-2)}
+ol.path li i{font-style:normal;font-family:var(--f-mono);font-size:12px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--line-2);color:var(--ink-3);margin-top:1px}
+ol.path li.done i{background:var(--go-soft);color:var(--go)}
+ol.path li.now i{background:var(--accent);color:var(--accent-ink)}
+ol.path li .pl{color:var(--ink-3);font-size:12.5px}
+
+/* treatment */
+.tx h4{margin:12px 0 4px;font-size:14px;color:var(--accent)}
+.tx h4:first-child{margin-top:0}
+.order{font-family:var(--f-mono);font-size:12.8px;background:var(--paper);border-radius:6px;padding:7px 10px;margin-top:6px;line-height:1.6}
+.bdr{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+.bdr .m{border:1px solid var(--line-2);border-radius:8px;padding:7px 12px;background:var(--paper);min-width:120px}
+.bdr .m .k{font-size:12px;color:var(--ink-2)}
+.bdr .m .v{font-family:var(--f-mono);font-size:19px}
+
+/* algorithm */
+.tree,.tree ul{list-style:none;margin:0;padding:0}
+.tree ul{padding-left:22px;border-left:1.5px solid var(--line);margin-left:9px}
+.tree li{position:relative;padding:4px 0 4px 12px}
+.tree ul>li::before{content:"";position:absolute;left:-1px;top:17px;width:11px;border-top:1.5px solid var(--line)}
+.tree .nd{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:5px 10px;background:var(--panel);font-size:13.8px;max-width:100%}
+.tree .nd small{display:block;color:var(--ink-3);font-size:12px}
+.tree .nd.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent) inset}
+.tree .nd.on b{color:var(--accent)}
+
+.log{font-size:12.8px;max-height:220px;overflow:auto;display:grid;gap:2px}
+.log div{display:grid;grid-template-columns:52px minmax(0,1fr);gap:8px}
+.log .mono{color:var(--ink-3)}
+.cases{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.case{display:grid;gap:8px;align-content:start}
+.refs{padding-left:20px;margin:0;display:grid;gap:8px;font-size:13.8px}
+.refs a{color:var(--accent)}
+.disclaimer{margin-top:22px;font-size:13px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:14px;max-width:90ch}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);font-size:13.5px;padding:8px 16px;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  body{background:#fff;font-size:12.5px}
+  .tabs,.noprint,.toast,.status .acts{display:none!important}
+  .status{position:static}
+  .card{border-color:#bbb;break-inside:avoid}
+}
+</style>
+<style>
+/* DM page additions */
+.status .phase{font-size:13px;color:var(--ink-2)}
+.status .acts{display:flex;gap:6px;flex-wrap:wrap}
+.grp{font-size:13px;font-weight:700;border-radius:7px;padding:5px 10px;background:var(--line-2);color:var(--ink-2)}
+.grp.dm,.grp.gdm,.grp.overt{background:var(--stop-soft);color:var(--stop)}
+.grp.probable,.grp.pre{background:var(--warn-soft);color:var(--warn)}
+.grp.normal{background:var(--go-soft);color:var(--go)}
+.grp.t{background:var(--accent-soft);color:var(--accent)}
+tr.hl td{background:var(--accent-soft)}
+tr.hl td:first-child{box-shadow:inset 3px 0 0 var(--accent);font-weight:700}
+.rec{display:grid;gap:8px}
+.rec .opt{border:1px solid var(--line-2);border-radius:8px;padding:8px 12px;display:grid;gap:3px}
+.rec .opt.p1{border-color:var(--go);box-shadow:0 0 0 1px var(--go) inset}
+.rec .opt.p0{border-color:var(--stop);box-shadow:0 0 0 1px var(--stop) inset}
+.rec .opt.p3{opacity:.85;border-style:dashed}
+.rec .opt b{font-size:14.5px}
+.rec .opt span{font-size:13px;color:var(--ink-2)}
+.nt td:first-child{font-weight:500}
+.nt .miss{margin:4px 0 0;padding-left:16px;font-size:12.5px;color:var(--ink-2)}
+.nt .rule{font-family:var(--f-mono);font-size:12px;color:var(--ink-3);white-space:nowrap}
+.lb .grid2 .field input[type=number]{width:100%}
+.qz{display:grid;gap:10px;border-top:1px dashed var(--line);padding-top:10px}
+.q{display:grid;gap:6px}
+.q .qt{font-size:14px;font-weight:500}
+.q .qo{display:grid;gap:5px}
+.q .qo button{appearance:none;text-align:left;font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:7px;padding:6px 10px;cursor:pointer;line-height:1.5}
+.q .qo button:hover{border-color:var(--accent)}
+.q .qo button.right{border-color:var(--go);background:var(--go-soft);color:var(--go);font-weight:500}
+.q .qo button.wrong{border-color:var(--stop);background:var(--stop-soft);color:var(--stop)}
+.q .qo button:disabled{cursor:default}
+.q .qe{font-size:13px;color:var(--ink-2);background:var(--accent-soft);border-radius:7px;padding:7px 10px}
+.case .vig{font-size:13.8px;line-height:1.7}
+.case .kp{font-size:13px}
+.cases{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+.score{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.cmp th:first-child,.cmp td:first-child{position:sticky;left:0;background:var(--panel)}
+.cmp td{font-size:13px}
+.y{color:var(--go);font-weight:700}.n{color:var(--stop);font-weight:700}.m{color:var(--warn);font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Diabetes · diagnosis, classification, individualized targets &amp; treatment with Taiwan NHI rules</div>
+    <h1>糖尿病診斷與治療決策台</h1>
+    <p class="sub">輸入檢驗值後，系統依「診斷是否成立 → 是否需要確認 → 分型 → 個別化血糖目標 → 器官保護與降糖治療 → 健保給付檢核」的順序即時判讀，並列出還缺哪些資料。指引建議與健保條件分開呈現，兩者不一致時會標出差異。另附十個教學病例，可載入評估並作答。</p>
+    <div class="src"><span>ADA Standards of Care in Diabetes—2026</span><span>ADA/EASD Management of T2D 2026</span><span>KDIGO Diabetes in CKD 2022／CKD 2024</span><span>IADPSG／Carpenter–Coustan</span><span>健保藥品給付規定 第五節 5.1（115.08.21）</span><span>第二節 2.16（115.9.22）</span></div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="功能分頁">
+    <button class="tab" role="tab" id="tab-ws" aria-controls="ws" data-t="ws"><b>1</b>引導評估</button>
+    <button class="tab" role="tab" id="tab-dx" aria-controls="dx" data-t="dx"><b>2</b>診斷與分型</button>
+    <button class="tab" role="tab" id="tab-tx" aria-controls="tx" data-t="tx"><b>3</b>治療選擇</button>
+    <button class="tab" role="tab" id="tab-nhi" aria-controls="nhi" data-t="nhi"><b>4</b>健保給付</button>
+    <button class="tab" role="tab" id="tab-algo" aria-controls="algo" data-t="algo"><b>5</b>流程總覽</button>
+    <button class="tab" role="tab" id="tab-cases" aria-controls="cases" data-t="cases"><b>6</b>教學病例</button>
+    <button class="tab" role="tab" id="tab-ref" aria-controls="ref" data-t="ref"><b>7</b>參考文獻</button>
+  </nav>
+
+  <!-- 1 引導評估 -->
+  <section class="pane" id="ws" role="tabpanel" aria-labelledby="tab-ws">
+    <div class="status" id="status"></div>
+    <div class="two" style="margin-top:16px">
+      <div class="stack">
+        <div id="sheet"></div>
+        <p class="note">欄位可依任何順序填寫；右側結果即時更新。藍色編號的分層會顯示已填數。</p>
+      </div>
+      <div class="stack">
+        <div class="card"><h3>下一步</h3><div id="nextBox"></div></div>
+        <div class="card"><h3>1 · 診斷判讀</h3><div id="dxBox"></div></div>
+        <div class="card"><h3>2 · 分型</h3><div id="typeBox"></div></div>
+        <div class="card"><h3>3 · 個別化血糖目標</h3><div id="tgBox"></div></div>
+        <div class="card"><h3>4 · 指引建議 <span class="pill ev">ADA 2026／ADA-EASD 2026</span></h3><div id="recBox" class="rec"></div></div>
+        <div class="card"><h3>5 · 健保給付檢核 <span class="pill warn">台灣健保</span></h3><div id="nhiBox"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 診斷與分型 -->
+  <section class="pane" id="dx" role="tabpanel" aria-labelledby="tab-dx" hidden>
+    <div class="two">
+      <div class="stack">
+        <div class="card"><h3>非孕期診斷標準 <span class="pill ev">ADA 2026 第 2 章</span></h3>
+          <div class="tablebox"><table><thead><tr><th>檢驗</th><th>糖尿病</th><th>前期</th></tr></thead><tbody>
+            <tr><td>HbA1c（NGSP 標準化方法）</td><td class="mono">≥6.5%</td><td class="mono">5.7–6.4%</td></tr>
+            <tr><td>空腹血漿葡萄糖（禁食 ≥8 小時）</td><td class="mono">≥126 mg/dL</td><td class="mono">100–125</td></tr>
+            <tr><td>75 g OGTT 2 小時</td><td class="mono">≥200 mg/dL</td><td class="mono">140–199</td></tr>
+            <tr><td>隨機血漿葡萄糖</td><td class="mono">≥200 mg/dL＋典型症狀或高血糖危象</td><td>—</td></tr>
+          </tbody></table></div>
+          <div class="sub-h">確認規則</div>
+          <ul class="plain">
+            <li>沒有典型症狀或危象時，需要兩個異常結果：同一份檢體的兩種檢驗（如 HbA1c＋FPG），或兩份檢體的同一種檢驗。</li>
+            <li>兩種檢驗結果不一致時，重複「達門檻的那項」；接近門檻者 3–6 個月後追蹤。</li>
+            <li>無症狀的單次隨機血糖 ≥200 不能直接確診。</li>
+          </ul>
+        </div>
+        <div class="card"><h3>HbA1c 可能失真的情況</h3>
+          <ul class="plain">
+            <li>血紅素病變（地中海型貧血帶因者需確認檢驗方法）、G6PD 缺乏</li>
+            <li>懷孕第 2–3 期與產後、近期失血或輸血、EPO 治療</li>
+            <li>透析或末期腎病、HIV（部分抗病毒藥）、缺鐵性貧血</li>
+          </ul>
+          <p class="note" style="margin-top:8px">這些情況下以血漿葡萄糖診斷；長期追蹤可搭配 CGM 或 glycated albumin／fructosamine。</p>
+        </div>
+        <div class="card"><h3>篩檢對象</h3>
+          <ul class="plain">
+            <li>ADA：所有成人自 35 歲起篩檢；過重（ADA 亞裔 BMI ≥23）且有一項危險因子者不論年齡即篩檢。</li>
+            <li>危險因子：一等親糖尿病、心血管疾病、高血壓、HDL &lt;35 或 TG &gt;250、PCOS、缺乏活動、黑色棘皮症、妊娠糖尿病病史（每 3 年終身追蹤）、HIV、使用抗精神病藥或類固醇。</li>
+            <li>結果正常每 3 年重複；前期每年。</li>
+            <li>台灣：國健署成人預防保健服務含空腹血糖（依年齡給予補助）。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card"><h3>妊娠期 <span class="pill ev">ADA 2026 第 2、15 章</span></h3>
+          <div class="tablebox"><table><thead><tr><th>方法（24–28 週）</th><th>門檻</th><th>判定</th></tr></thead><tbody>
+            <tr><td>一階段：75 g OGTT</td><td class="mono">空腹 ≥92、1 h ≥180、2 h ≥153</td><td>任一點即為 GDM</td></tr>
+            <tr><td>兩階段：50 g GCT（不需空腹）</td><td class="mono">1 h ≥130／135／140</td><td>異常再做 100 g OGTT</td></tr>
+            <tr><td>100 g 3 h OGTT（Carpenter–Coustan）</td><td class="mono">95／180／155／140</td><td>≥2 點異常</td></tr>
+          </tbody></table></div>
+          <ul class="plain" style="margin-top:8px">
+            <li>孕 &lt;15 週有危險因子者以非孕期標準篩檢；符合者為孕前即有的糖尿病（overt diabetes）。</li>
+            <li>孕早期 FPG 110–125 或 HbA1c 5.9–6.4% 為高風險，加強追蹤。</li>
+            <li>產後 4–12 週以 75 g OGTT（非孕期標準）再評估，之後每 1–3 年篩檢。</li>
+          </ul>
+        </div>
+        <div class="card"><h3>分型線索</h3>
+          <div class="tablebox"><table><thead><tr><th>類型</th><th>支持的線索</th><th>確認檢查</th></tr></thead><tbody>
+            <tr><td>第 1 型（含 LADA）</td><td>年輕、偏瘦、體重快速下降、發病即 DKA、需要胰島素</td><td>GAD65、IA-2、ZnT8、胰島素抗體；C-peptide 低</td></tr>
+            <tr><td>第 2 型</td><td>過重或肥胖、家族史、代謝症候群、黑色棘皮症</td><td>排除其他型；抗體陰性</td></tr>
+            <tr><td>單基因（MODY）</td><td>&lt;35 歲發病、多代家族史、抗體陰性、無胰島素阻抗</td><td>基因檢測（HNF1A、HNF4A、GCK）</td></tr>
+            <tr><td>胰臟外分泌（3c）</td><td>慢性胰臟炎、胰臟手術、血色素沉著症</td><td>影像、胰臟外分泌功能</td></tr>
+            <tr><td>藥物誘發</td><td>類固醇、抗精神病藥、calcineurin 抑制劑、免疫檢查點抑制劑</td><td>時間關係；ICI 相關者可快速進入 DKA</td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 治療選擇 -->
+  <section class="pane" id="tx" role="tabpanel" aria-labelledby="tab-tx" hidden>
+    <div class="stack">
+      <div class="card"><h3>選藥順序（第 2 型，非孕期成人）</h3>
+        <ol class="plain" style="padding-left:20px">
+          <li><b>先排除急症與嚴重高血糖</b>：DKA／HHS 先處理；有症狀、體重下降、酮體，或 HbA1c &gt;10%、血糖 ≥300 mg/dL 時考慮起始胰島素。</li>
+          <li><b>器官保護與 HbA1c 無關</b>：心衰竭 → SGLT2i；CKD（eGFR ≥20）→ SGLT2i，白蛋白尿再考慮 finerenone 與 GLP-1 RA；ASCVD → 具實證的 GLP-1 RA 和／或 SGLT2i。</li>
+          <li><b>體重管理</b>：肥胖時 GLP-1 RA 或 tirzepatide；MASLD 亦優先。</li>
+          <li><b>降糖需求與低血糖風險</b>：metformin 仍是常用且具成本效益的基礎；長者與衰弱者避免 SU，並適時降階。</li>
+          <li><b>無嚴重高血糖時</b>，ADA 2026 優先考慮 GLP-1 類藥物作為初始或追加降糖治療；實際處方需對照健保條件（第 4 分頁）。</li>
+        </ol>
+      </div>
+      <div class="card"><h3>藥物類別比較</h3>
+        <div class="tablebox"><table class="cmp"><thead><tr><th>類別</th><th>降糖效果</th><th>低血糖</th><th>體重</th><th>ASCVD</th><th>心衰竭</th><th>CKD</th><th>注意</th><th>健保重點</th></tr></thead><tbody>
+          <tr><td>Metformin</td><td>高</td><td class="y">低</td><td>中性／略降</td><td>可能有益</td><td>中性</td><td>eGFR 30–44 減量，&lt;30 禁用</td><td>腸胃不適、B12 缺乏、顯影劑</td><td>第二型優先用藥</td></tr>
+          <tr><td>SGLT2 抑制劑</td><td>中</td><td class="y">低</td><td>降</td><td class="y">有益（empa、cana）</td><td class="y">有益</td><td class="y">有益（eGFR ≥20 起始）</td><td>生殖器感染、正常血糖 DKA、手術前 3 天停藥</td><td>5.1：metformin 最大劑量失敗；2.16：HF、CKD 另有途徑</td></tr>
+          <tr><td>GLP-1 RA</td><td>高至極高</td><td class="y">低</td><td>明顯降</td><td class="y">有益（lira、dula、sema）</td><td>中性</td><td class="y">有益（sema）</td><td>腸胃道、胰臟炎病史、MTC／MEN2</td><td>5.1.3.2：6 個月＋HbA1c &gt;8.5% 或重大心血管事件；不得併 SGLT2／DPP-4</td></tr>
+          <tr><td>Tirzepatide</td><td>極高</td><td class="y">低</td><td>極明顯降</td><td>研究中</td><td>HFpEF 肥胖有益</td><td>研究中</td><td>同 GLP-1 RA</td><td>第五節未列條文（多為自費）</td></tr>
+          <tr><td>DPP-4 抑制劑</td><td>中</td><td class="y">低</td><td>中性</td><td>中性</td><td class="m">saxagliptin 增加 HF 住院</td><td>需依腎功能調整（linagliptin 除外）</td><td>耐受性佳</td><td>5.1：metformin 失敗；與 SGLT2 宜擇一</td></tr>
+          <tr><td>TZD（pioglitazone）</td><td>高</td><td class="y">低</td><td>增</td><td>可能有益</td><td class="n">增加 HF 風險</td><td>中性</td><td>水腫、骨折；MASH 有益</td><td>5.1：metformin 失敗</td></tr>
+          <tr><td>Sulfonylurea</td><td>高</td><td class="n">高</td><td>增</td><td>中性</td><td>中性</td><td>腎功能差時低血糖更多</td><td>長者避免 glyburide</td><td>metformin 未控制或無法使用時</td></tr>
+          <tr><td>胰島素</td><td>最高</td><td class="n">高</td><td>增</td><td>中性</td><td>中性</td><td>腎功能差需減量</td><td>需衛教與監測</td><td>各類皆給付；三種口服藥失敗宜考慮</td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="two">
+        <div class="card"><h3>胰島素起始與調整</h3>
+          <ul class="plain">
+            <li>基礎胰島素：10 U／日或 0.1–0.2 U/kg，每 3 天依空腹血糖調 2 U（或 10–15%），空腹目標 80–130 mg/dL。</li>
+            <li>基礎劑量 &gt;0.5 U/kg、睡前與早上落差大或餐後高，考慮加 GLP-1 RA 或餐前胰島素，不要只一直加基礎量。</li>
+            <li>嚴重高血糖解除後（糖毒性改善），可嘗試降階為口服或 GLP-1 類藥物。</li>
+          </ul>
+        </div>
+        <div class="card"><h3>長者與衰弱者</h3>
+          <ul class="plain">
+            <li>健康：HbA1c &lt;7.0–7.5%；複雜或中度：&lt;8.0%；極複雜：避免以 HbA1c 為目標，重點是避免低血糖與症狀性高血糖。</li>
+            <li>使用 SU 或胰島素且 HbA1c 低於目標時應降階。</li>
+            <li>簡化注射次數與用藥時間，配合照顧者。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 健保給付 -->
+  <section class="pane" id="nhi" role="tabpanel" aria-labelledby="tab-nhi" hidden>
+    <div class="stack">
+      <div class="alert info"><strong>條文版本</strong><span class="small" id="nhiVer"></span><span class="small">本頁為條文摘要與教學用判讀，申報時以健保署最新公告、各分區審查共識與院內規範為準。</span></div>
+      <div class="card"><h3>5.1 糖尿病用藥：使用條件（105/5/1、114/6/1）</h3>
+        <ol class="plain" style="padding-left:20px">
+          <li>第二型糖尿病原則上<b>優先使用 metformin</b>，或考慮早期開始使用胰島素；有過敏、禁忌、不能耐受或仍無法理想控制時，可使用其他類口服降血糖藥。</li>
+          <li><b>TZD、DPP-4 抑制劑、SGLT2 抑制劑</b>及含此 3 類成分的複方，限<b>已接受過最大耐受劑量 metformin</b> 仍無法理想控制血糖者；<b>SGLT2 與 DPP-4 及其複方宜二擇一</b>。</li>
+          <li>使用<b>三種口服藥</b>仍無法理想控制者，宜考慮胰島素。</li>
+          <li>應加強生活型態衛教（飲食、運動、控制體重）。</li>
+        </ol>
+      </div>
+      <div class="card"><h3>各藥條文摘要</h3>
+        <div class="tablebox"><table><thead><tr><th>條文</th><th>藥品</th><th>給付條件</th></tr></thead><tbody>
+          <tr><td class="mono">5.1.1</td><td>Acarbose、miglitol</td><td>非胰島素依賴型糖尿病</td></tr>
+          <tr><td class="mono">5.1.3.1</td><td>Exenatide</td><td>最大耐受劑量 metformin 及／或 SU 仍未理想控制；不得與胰島素、DPP-4、SGLT2 併用</td></tr>
+          <tr><td class="mono">5.1.3.2</td><td>Liraglutide、dulaglutide、lixisenatide、semaglutide（Ozempic）</td><td>
+            <b>途徑 1</b>：最大耐受劑量 metformin 及／或 SU，且併用 SGLT2、DPP-4、SGLT2+DPP-4 複方或胰島素其一持續 6 個月後，HbA1c 仍高於 8.5%。<br>
+            <b>途徑 3</b>：曾發生重大心血管事件（心肌梗塞、冠狀動脈或其他動脈血管再通術、動脈硬化缺血性中風），接受最大耐受劑量 metformin 後仍未理想控制，可不須使用其他口服藥而使用 liraglutide、dulaglutide 或 semaglutide。<br>
+            可與口服藥及／或基礎胰島素併用；<b>不得與 DPP-4、SGLT2 併用</b>。</td></tr>
+          <tr><td class="mono">5.1.3.3</td><td>Insulin glargine＋lixisenatide（Soliqua）</td><td>成人；最大耐受劑量 metformin 及／或 SU，且併用 SGLT2、DPP-4、複方或胰島素（&lt;60 U/日）其一 6 個月後 HbA1c 仍高於 8.0%；不得與 DPP-4、SGLT2 併用</td></tr>
+          <tr><td class="mono">5.1.5</td><td>Dapagliflozin、empagliflozin、canagliflozin、ertugliflozin 及與 metformin 複方</td><td>每日最多 1 粒（Jardiance Duo 2 粒）</td></tr>
+          <tr><td class="mono">5.1.6–5.1.8</td><td>Glyxambi、Qtern、Steglujan</td><td>每日 1 粒；最大耐受劑量 metformin，且併用其中一成分至少 6 個月，HbA1c 仍高於 7.5%</td></tr>
+          <tr><td class="mono">2.16-1</td><td>Dapagliflozin、empagliflozin 10 mg（心衰竭）</td><td>NYHA II–IV；LVEF ≤40%，或 41–49% 且曾因心衰竭住院或經心臟專科醫師診斷（需一年內檢查數值）；ACEI/ARB 穩定劑量＋β 阻斷劑最大耐受劑量 ≥4 週（或禁忌）仍有症狀</td></tr>
+          <tr><td class="mono">2.16-2</td><td>Dapagliflozin、empagliflozin 10 mg（慢性腎臟病）</td><td>參加初期 CKD 照護整合方案或 Pre-ESRD 計畫；最大耐受劑量 ACEI/ARB ≥4 週；起始 eGFR 25–60、UACR 200–5000 mg/g；排除第 1 型糖尿病、多囊腎、狼瘡腎炎、ANCA 血管炎、6 個月內化療／免疫抑制、器官移植、近期急性冠心症或中風、12 週內 TIA 或血管重建；eGFR &lt;15 停藥</td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="card"><h3>指引建議與健保給付的落差（教學重點）</h3>
+        <div class="tablebox"><table><thead><tr><th>情境</th><th>ADA 2026／ADA-EASD 2026</th><th>台灣健保</th><th>實務做法</th></tr></thead><tbody>
+          <tr><td>新診斷、無嚴重高血糖</td><td>GLP-1 類藥物可作為初始治療的優先選擇</td><td>GLP-1 RA 不能第一線申報</td><td>metformin 起始；希望早用 GLP-1 需自費</td></tr>
+          <tr><td>ASCVD、HF、CKD</td><td>不論 HbA1c 使用 SGLT2i 或 GLP-1 RA</td><td>糖尿病適應症需 metformin 失敗；HF 與 CKD 可走 2.16；GLP-1 可走心血管事件途徑</td><td>先確認走哪一條條文，病歷記錄 LVEF、eGFR、UACR、事件史</td></tr>
+          <tr><td>SGLT2i＋GLP-1 RA 併用</td><td>心腎高風險時建議合併</td><td>GLP-1 RA 不得與 SGLT2 併用</td><td>其一自費，或依優先順序擇一</td></tr>
+          <tr><td>肥胖</td><td>GLP-1 RA、tirzepatide 優先</td><td>tirzepatide 未列條文；GLP-1 需達 8.5% 門檻</td><td>說明自費選項與費用</td></tr>
+          <tr><td>白蛋白尿</td><td>加 finerenone</td><td>第二節未列專屬條文</td><td>查詢收載狀態</td></tr>
+          <tr><td>SGLT2＋DPP-4</td><td>可併用</td><td>宜二擇一；複方需 6 個月＋HbA1c &gt;7.5%</td><td>先用單方滿 6 個月再換複方</td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="card"><h3>照護方案</h3>
+        <ul class="plain">
+          <li>「糖尿病及初期慢性腎臟病照護整合方案」：定期追蹤 HbA1c、血脂、UACR、eGFR、眼底與足部檢查並提供衛教；2.16 CKD 適應症也要求病人參加此方案或 Pre-ESRD 計畫。</li>
+          <li>收案條件、檢查頻率與給付點數依健保署最新方案公告。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 流程總覽 -->
+  <section class="pane" id="algo" role="tabpanel" aria-labelledby="tab-algo" hidden>
+    <div class="two">
+      <div class="card"><h3>診斷與分型 <span class="small muted" style="font-weight:400">高亮＝目前病人位置</span></h3>
+        <ul class="tree">
+          <li><span class="nd" data-k="start"><b>高血糖或篩檢</b><small>HbA1c、FPG、OGTT、隨機血糖</small></span>
+            <ul>
+              <li><span class="nd" data-k="crisis"><b>危象？</b><small>DKA／HHS 先處理</small></span></li>
+              <li><span class="nd" data-k="preg"><b>懷孕</b><small>&lt;15 週非孕期標準；24–28 週 OGTT</small></span>
+                <ul><li><span class="nd" data-k="gdm"><b>GDM</b><small>生活型態 → 胰島素</small></span></li><li><span class="nd" data-k="overt"><b>孕前即有糖尿病</b><small>依非孕期標準</small></span></li></ul></li>
+              <li><span class="nd" data-k="nonpreg"><b>非孕期</b></span>
+                <ul>
+                  <li><span class="nd" data-k="pre"><b>前期</b><small>生活型態、每年追蹤</small></span></li>
+                  <li><span class="nd" data-k="probable"><b>單項達門檻</b><small>重複達門檻的檢驗</small></span></li>
+                  <li><span class="nd" data-k="dm"><b>糖尿病確立</b></span>
+                    <ul><li><span class="nd" data-k="t1"><b>第 1 型</b><small>抗體、C-peptide</small></span></li><li><span class="nd" data-k="t2"><b>第 2 型</b></span></li><li><span class="nd" data-k="other"><b>其他特定型</b></span></li></ul></li>
+                </ul></li>
+            </ul></li>
+        </ul>
+      </div>
+      <div class="card"><h3>第 2 型治療</h3>
+        <ul class="tree">
+          <li><span class="nd" data-k="t2s"><b>第 2 型糖尿病</b></span>
+            <ul>
+              <li><span class="nd" data-k="severe"><b>嚴重高血糖</b><small>HbA1c &gt;10%、血糖 ≥300、分解代謝 → 胰島素</small></span></li>
+              <li><span class="nd" data-k="organ"><b>心腎共病</b><small>HF、CKD → SGLT2i；ASCVD → GLP-1 RA／SGLT2i</small></span>
+                <ul><li><span class="nd" data-k="nhi216"><b>健保 2.16</b><small>HF／CKD 途徑，不需 metformin 失敗</small></span></li><li><span class="nd" data-k="nhimace"><b>健保 5.1.3.2 第 3 點</b><small>重大心血管事件 → GLP-1 RA</small></span></li></ul></li>
+              <li><span class="nd" data-k="obese"><b>肥胖、MASLD</b><small>GLP-1 RA、tirzepatide</small></span></li>
+              <li><span class="nd" data-k="hypo"><b>低血糖高風險</b><small>避免 SU、降階</small></span></li>
+              <li><span class="nd" data-k="std"><b>一般</b><small>metformin → 依成本與副作用加第二線</small></span>
+                <ul><li><span class="nd" data-k="nhi52"><b>健保 5.1 2(2)</b><small>metformin 最大劑量失敗 → SGLT2i／DPP-4i／TZD</small></span></li><li><span class="nd" data-k="nhiglp"><b>健保 5.1.3.2 第 1 點</b><small>6 個月＋HbA1c &gt;8.5% → GLP-1 RA</small></span></li></ul></li>
+            </ul></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 教學病例 -->
+  <section class="pane" id="cases" role="tabpanel" aria-labelledby="tab-cases" hidden>
+    <div class="score"><span id="scoreBox" class="grp t"></span><button class="btn sm" type="button" id="quizReset">重設作答</button><span class="muted small">每例可「載入至引導評估」看系統判讀，再回來作答。病例為教學用虛構資料。</span></div>
+    <div class="cases" id="caseList"></div>
+  </section>
+
+  <!-- 7 參考文獻 -->
+  <section class="pane" id="ref" role="tabpanel" aria-labelledby="tab-ref" hidden>
+    <div class="card">
+      <ol class="refs">
+        <li>American Diabetes Association Professional Practice Committee. Standards of Care in Diabetes—2026. <i>Diabetes Care</i> 2026;49(Suppl 1). 第 2 章（診斷與分類）、第 6 章（血糖目標）、第 9 章（藥物治療）、第 10 章（心血管）、第 11 章（CKD）、第 13 章（長者）、第 15 章（孕期）。<a href="https://professional.diabetes.org/standards-of-care" target="_blank" rel="noopener">professional.diabetes.org</a></li>
+        <li>ADA/EASD. Management of Type 2 Diabetes, 2026: A Consensus Report. <i>Diabetes Care</i> 2026（2026/10/2 線上發表）. <a href="https://doi.org/10.2337/dci26-0141" target="_blank" rel="noopener">doi:10.2337/dci26-0141</a></li>
+        <li>KDIGO 2022 Clinical Practice Guideline for Diabetes Management in CKD；KDIGO 2024 CKD Evaluation and Management（2026 糖尿病與 CKD 更新版尚為草案）。<a href="https://kdigo.org/guidelines/diabetes-ckd/" target="_blank" rel="noopener">kdigo.org</a></li>
+        <li>AACE Consensus Statement: Algorithm for Management of Adults with Type 2 Diabetes—2026 Update. <a href="https://pro.aace.com/clinical-guidance/aace-consensus-statement-algorithm-management-adults-type-2-diabetes-2026-update" target="_blank" rel="noopener">pro.aace.com</a></li>
+        <li>IDF Global Clinical Practice Recommendations for the Management of Type 2 Diabetes, 2025. <a href="https://idf.org/our-activities/education/idf-clinical-practice-recommendations-for-type-2-diabetes-2025/" target="_blank" rel="noopener">idf.org</a></li>
+        <li>NICE NG28 Type 2 diabetes in adults: management（2026/2/18 更新）。<a href="https://www.nice.org.uk/guidance/ng28" target="_blank" rel="noopener">nice.org.uk</a></li>
+        <li>ISPAD Clinical Practice Consensus Guidelines 2022（2024 更新部分章節）。<a href="https://www.ispad.org/resources/ispad-clinical-practice-consensus-guidelines.html" target="_blank" rel="noopener">ispad.org</a></li>
+        <li>WHO. Recommendations on care for women with diabetes during pregnancy, 2025. <a href="https://www.who.int/publications/i/item/9789240117044" target="_blank" rel="noopener">who.int</a></li>
+        <li>衛生福利部中央健康保險署。藥品給付規定 第五節 激素及影響內分泌機轉藥物（115.08.21 更新）、第二節 心臟血管及腎臟藥物（115.9.22 更新）。<a href="https://www.nhi.gov.tw/ch/cp-7593-ad2a9-3397-1.html" target="_blank" rel="noopener">nhi.gov.tw</a></li>
+      </ol>
+      <div class="sub-h">版本紀錄</div>
+      <ul class="plain">
+        <li>2026-10-28：初版。診斷（非孕期、孕期一階段／兩階段）、分型、個別化目標、指引建議、健保 5.1／5.1.3.1–5.1.3.3／5.1.5–5.1.8／2.16 逐條檢核，十個教學病例（含作答）。健保條文於 2026-10-28 自健保署下載核對。</li>
+      </ul>
+    </div>
+    <p class="disclaimer">本工具供醫療專業人員教育與流程輔助使用，不取代臨床判斷與院內規範。指引與健保規定會更新，處方前請以最新版指引、台灣藥品仿單核准適應症、健保署公告與院內藥品條件為準。輸入資料只存在您這台裝置的瀏覽器中（localStorage），不會上傳；請勿輸入可識別病人身分的資訊。</p>
+  </section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+/*ENGINE-START*/
+const DM = (() => {
+'use strict';
+const NHI_VER = '藥品給付規定 第五節（115.08.21 更新；5.1 使用條件 114/6/1）、第二節 2.16（115.9.22 更新；114/3/1 條文）';
+
+const num = v => (v === '' || v === null || v === undefined || isNaN(+v)) ? null : +v;
+const has = v => num(v) !== null;
+
+/* ---------- 1. 診斷 ---------- */
+// ADA Standards of Care 2026, Section 2 (Table 2.1 / 2.2)
+const TH = {
+  dm: { a1c: 6.5, fpg: 126, ogtt: 200, rpg: 200 },
+  pre: { a1c: 5.7, fpg: 100, ogtt: 140 },
+  gdm1: { f: 92, h1: 180, h2: 153 },             // IADPSG one-step 75 g
+  cc: { f: 95, h1: 180, h2: 155, h3: 140 },      // Carpenter–Coustan 100 g
+  gct: 140                                       // 50 g GCT (ADA allows 130/135/140)
+};
+
+function diagnose(s) {
+  const out = { status: 'incomplete', confirmed: false, label: '', reasons: [], warn: [], next: [], tests: [] };
+  if (s.ctx === 'preg') return diagPreg(s, out);
+  if (s.known) { out.status = 'dm'; out.confirmed = true; out.label = '已知糖尿病（先前已確診）'; out.reasons.push('先前已確診，直接進入分型與治療'); return out; }
+  const a1c = s.a1cUnrel ? null : num(s.a1c), fpg = num(s.fpg), og = num(s.ogtt), rpg = num(s.rpg);
+  if (s.a1cUnrel && has(s.a1c)) out.warn.push('HbA1c 可能失真（血紅素病變、懷孕、近期失血或輸血、EPO、透析、G6PD 缺乏、HIV 等）：診斷改以血漿葡萄糖為準，本次 HbA1c 不列入判讀。');
+  const t = [
+    ['HbA1c', a1c, TH.dm.a1c, TH.pre.a1c, '%'],
+    ['空腹血漿葡萄糖', fpg, TH.dm.fpg, TH.pre.fpg, 'mg/dL'],
+    ['75 g OGTT 2 小時', og, TH.dm.ogtt, TH.pre.ogtt, 'mg/dL']
+  ];
+  const abn = [], pre = [];
+  t.forEach(([n, v, d, p, u]) => {
+    if (v === null) return;
+    const st = v >= d ? 'dm' : v >= p ? 'pre' : 'normal';
+    out.tests.push({ n, v, u, st });
+    if (st === 'dm') abn.push(n); else if (st === 'pre') pre.push(n);
+  });
+  if (rpg !== null) out.tests.push({ n: '隨機血漿葡萄糖', v: rpg, u: 'mg/dL', st: rpg >= TH.dm.rpg ? 'dm' : 'normal' });
+  const sym = !!(s.sym || s.crisis);
+  if (s.crisis) out.warn.push('疑似高血糖危象（DKA／HHS）：先處理急症，評估酮體、滲透壓、電解質與誘因，不必等待確認性檢驗。');
+
+  if (rpg !== null && rpg >= TH.dm.rpg && sym) {
+    out.status = 'dm'; out.confirmed = true; out.label = '糖尿病（典型症狀＋隨機血糖 ≥200）';
+    out.reasons.push(`隨機血漿葡萄糖 ${rpg} mg/dL ≥200，且有典型高血糖症狀或危象：單次即可診斷`);
+    return out;
+  }
+  if (abn.length >= 2) {
+    out.status = 'dm'; out.confirmed = true; out.label = '糖尿病（兩項檢驗皆達門檻）';
+    out.reasons.push(`${abn.join('、')} 皆達糖尿病門檻：同一份或兩份檢體的兩種檢驗皆異常即可確診`);
+    return out;
+  }
+  if (abn.length === 1 && s.repeatOk) {
+    out.status = 'dm'; out.confirmed = true; out.label = '糖尿病（重複檢驗確認）';
+    out.reasons.push(`${abn[0]} 達門檻，且另一次檢驗已再次確認`);
+    return out;
+  }
+  if (abn.length === 1) {
+    out.status = 'probable'; out.label = '達糖尿病門檻，待確認';
+    out.reasons.push(`僅 ${abn[0]} 達門檻，且無典型症狀：需確認性檢驗`);
+    if (pre.length) out.reasons.push(`另一項（${pre.join('、')}）落在前期範圍——結果不一致時，重複「達門檻的那項」檢驗`);
+    out.next.push(`儘速重複 ${abn[0]}（或加驗另一種檢驗）；若再次達門檻即確診，勾選「已重複檢驗確認」`);
+    return out;
+  }
+  if (rpg !== null && rpg >= TH.dm.rpg && !sym) {
+    out.status = 'probable'; out.label = '隨機血糖 ≥200，但無症狀';
+    out.reasons.push('無症狀時，單次隨機血糖 ≥200 不能直接確診');
+    out.next.push('安排空腹血糖、HbA1c 或 75 g OGTT 確認');
+    return out;
+  }
+  if (pre.length) {
+    out.status = 'pre'; out.label = '糖尿病前期';
+    out.reasons.push(`${pre.join('、')} 落在前期範圍（HbA1c 5.7–6.4%、FPG 100–125、OGTT 2 h 140–199）`);
+    out.next.push('生活型態介入（減重 ≥7%、每週 150 分鐘活動）；每年追蹤血糖');
+    return out;
+  }
+  if (out.tests.length) { out.status = 'normal'; out.label = '未達糖尿病或前期標準'; out.reasons.push('目前檢驗皆在正常範圍'); out.next.push('有危險因子者每 3 年重新篩檢（前期者每年）'); return out; }
+  out.next.push('輸入 HbA1c、空腹血糖、OGTT 或隨機血糖其中至少一項');
+  return out;
+}
+
+function diagPreg(s, out) {
+  const ga = num(s.ga);
+  const f = num(s.ogF), h1 = num(s.ogH1), h2 = num(s.ogH2);
+  const a1c = num(s.a1c), fpg = num(s.fpg), rpg = num(s.rpg);
+  // 孕前已存在的糖尿病（任何週數符合非孕期標準）
+  const overt = (a1c !== null && a1c >= 6.5) || (fpg !== null && fpg >= 126) || (rpg !== null && rpg >= 200 && (s.sym || s.crisis));
+  if (overt) {
+    out.status = 'overt'; out.confirmed = true; out.label = '孕前即有的糖尿病（overt diabetes）';
+    out.reasons.push('孕期檢驗符合非孕期糖尿病標準（HbA1c ≥6.5%、FPG ≥126 或症狀＋隨機 ≥200）：視為孕前已存在的糖尿病，而非妊娠糖尿病');
+    return out;
+  }
+  if (ga !== null && ga < 15 && ((a1c !== null && a1c >= 5.9) || (fpg !== null && fpg >= 110))) {
+    out.warn.push('孕早期血糖代謝異常（FPG 110–125 或 HbA1c 5.9–6.4%）：屬高風險，加強追蹤並於 24–28 週前完成 OGTT。');
+  }
+  if (s.ogMode === 'two') {
+    const g = num(s.gct), F = num(s.cF), H1 = num(s.cH1), H2 = num(s.cH2), H3 = num(s.cH3);
+    if (g !== null) out.tests.push({ n: '50 g GCT 1 h', v: g, u: 'mg/dL', st: g >= TH.gct ? 'pre' : 'normal' });
+    const vals = [['空腹', F, TH.cc.f], ['1 h', H1, TH.cc.h1], ['2 h', H2, TH.cc.h2], ['3 h', H3, TH.cc.h3]];
+    const ab = vals.filter(v => v[1] !== null && v[1] >= v[2]);
+    vals.forEach(v => { if (v[1] !== null) out.tests.push({ n: '100 g OGTT ' + v[0], v: v[1], u: 'mg/dL', st: v[1] >= v[2] ? 'dm' : 'normal' }); });
+    if (ab.length >= 2) { out.status = 'gdm'; out.confirmed = true; out.label = '妊娠糖尿病（兩階段法）'; out.reasons.push(`100 g OGTT ${ab.map(x => x[0]).join('、')} 達 Carpenter–Coustan 門檻（≥2 項）`); return out; }
+    if (vals.some(v => v[1] !== null)) { out.status = 'normal'; out.label = '100 g OGTT 未達妊娠糖尿病'; out.reasons.push(ab.length === 1 ? '僅 1 項異常（ADA 以 ≥2 項為準；ACOG 允許 1 項，臨床可加強追蹤）' : '各點皆未達門檻'); return out; }
+    if (g !== null && g >= TH.gct) { out.status = 'probable'; out.label = 'GCT 異常，待 100 g OGTT'; out.next.push('安排 100 g 3 小時 OGTT'); return out; }
+    if (g !== null) { out.status = 'normal'; out.label = 'GCT 未達門檻'; out.reasons.push(`50 g GCT ${g} <${TH.gct} mg/dL`); return out; }
+    out.next.push('輸入 50 g GCT 或 100 g OGTT 結果'); return out;
+  }
+  const vals = [['空腹', f, TH.gdm1.f], ['1 h', h1, TH.gdm1.h1], ['2 h', h2, TH.gdm1.h2]];
+  vals.forEach(v => { if (v[1] !== null) out.tests.push({ n: '75 g OGTT ' + v[0], v: v[1], u: 'mg/dL', st: v[1] >= v[2] ? 'dm' : 'normal' }); });
+  const ab = vals.filter(v => v[1] !== null && v[1] >= v[2]);
+  if (ab.length) { out.status = 'gdm'; out.confirmed = true; out.label = '妊娠糖尿病（一階段 75 g OGTT）'; out.reasons.push(`${ab.map(x => `${x[0]} ${x[1]}（≥${x[2]}）`).join('、')}：任一點達標即診斷`); return out; }
+  if (vals.some(v => v[1] !== null)) { out.status = 'normal'; out.label = '75 g OGTT 未達妊娠糖尿病'; out.reasons.push('空腹 <92、1 h <180、2 h <153'); return out; }
+  out.next.push(ga !== null && ga < 24 ? '24–28 週安排 75 g OGTT（孕早期有危險因子者先以非孕期標準篩檢）' : '輸入 24–28 週 75 g OGTT 結果');
+  return out;
+}
+
+/* ---------- 2. 分型 ---------- */
+function classify(s, d) {
+  const c = { type: null, label: '', clues: [], next: [] };
+  if (s.ctx === 'preg') {
+    if (d.status === 'gdm') { c.type = 'gdm'; c.label = '妊娠糖尿病'; }
+    else if (d.status === 'overt') { c.type = 't2'; c.label = '孕前即有的糖尿病（多為第 2 型，需評估分型）'; }
+    return c;
+  }
+  if (!['dm', 'probable'].includes(d.status)) return c;
+  if (s.typeSel) { c.type = s.typeSel; c.label = { t1: '第 1 型糖尿病', t2: '第 2 型糖尿病', other: '其他特定型' }[s.typeSel] + '（使用者指定）'; return c; }
+  const age = num(s.age), bmi = num(s.bmi);
+  if (s.ab === 'pos') { c.type = 't1'; c.label = '第 1 型糖尿病（自體抗體陽性）'; c.clues.push('胰島自體抗體陽性（GAD65、IA-2、ZnT8、胰島素抗體）'); if (age !== null && age >= 35) c.clues.push('成人發病且抗體陽性：成人潛伏性自體免疫糖尿病（LADA）屬第 1 型'); return c; }
+  if (s.steroid) { c.type = 'other'; c.label = '其他特定型：藥物誘發（類固醇等）'; c.clues.push('使用類固醇、抗精神病藥、免疫抑制劑或 checkpoint inhibitor 等'); return c; }
+  if (s.pancreas) { c.type = 'other'; c.label = '其他特定型：胰臟外分泌疾病（3c 型）'; c.clues.push('慢性胰臟炎、胰臟切除、囊性纖維化或血色素沉著症'); return c; }
+  const t1clue = [];
+  if (s.dka) t1clue.push('發病即 DKA／酮體陽性');
+  if (s.cpep === 'low') t1clue.push('C-peptide 低');
+  if (bmi !== null && bmi < 24 && s.wtLoss) t1clue.push('體型偏瘦且體重快速下降');
+  if (age !== null && age < 35) t1clue.push('年輕發病');
+  if (s.ab === 'unk' || !s.ab) {
+    if (t1clue.length >= 2 || (s.dka && s.cpep === 'low')) {
+      c.type = 't1'; c.label = '疑似第 1 型糖尿病（待抗體確認）'; c.clues = t1clue; c.next.push('檢驗胰島自體抗體（先 GAD65，陰性再加 IA-2、ZnT8）與 C-peptide'); return c;
+    }
+  }
+  if (s.mody && s.ab === 'neg' && age !== null && age < 35) { c.type = 'other'; c.label = '疑似單基因糖尿病（MODY）'; c.clues.push('年輕發病、多代家族史、抗體陰性'); c.next.push('轉介基因檢測（HNF1A、HNF4A、GCK 等）'); return c; }
+  c.type = 't2'; c.label = '第 2 型糖尿病';
+  if (bmi !== null && bmi >= 24) c.clues.push(`BMI ${bmi}（台灣過重 ≥24、肥胖 ≥27）`);
+  if (t1clue.length) { c.clues.push('有部分第 1 型線索：' + t1clue.join('、')); c.next.push('若血糖惡化快速或對口服藥反應差，檢驗自體抗體排除 LADA'); }
+  return c;
+}
+
+/* ---------- 3. 血糖目標 ---------- */
+function target(s, c) {
+  const age = num(s.age);
+  if (c.type === 'gdm' || s.ctx === 'preg') return { a1c: 6.0, txt: 'HbA1c <6%（無低血糖時；必要時放寬至 <7%）', sub: '空腹 <95、餐後 1 h <140、餐後 2 h <120 mg/dL', why: ['孕期目標（ADA 第 15 章）'] };
+  if (age !== null && age < 18) return { a1c: 7.0, txt: 'HbA1c <7%（ISPAD 建議 ≤6.5%，視低血糖風險）', sub: '兒童青少年依 ISPAD 個別化', why: ['未滿 18 歲'] };
+  if (s.health === 'vcomplex') return { a1c: null, txt: '不以 HbA1c 為主要目標', sub: '避免低血糖與症狀性高血糖（餐前 100–180 mg/dL）', why: ['健康狀態極複雜或末期'] };
+  if (s.health === 'complex' || s.frail || s.lifeLtd) return { a1c: 8.0, txt: 'HbA1c <8.0%', sub: '餐前 90–150 mg/dL；優先避免低血糖', why: ['多重慢性病、認知或功能受損、預期壽命有限'] };
+  if (age !== null && age >= 65) return { a1c: 7.0, txt: 'HbA1c <7.0–7.5%', sub: '健康的長者；避免低血糖', why: ['年齡 ≥65 且健康狀態良好'] };
+  if (s.goalLow && !s.hypoRisk) return { a1c: 6.5, txt: 'HbA1c <6.5%', sub: '健康、病程短、低血糖風險低，且不增加治療負擔時', why: ['使用者選擇較嚴格目標'] };
+  return { a1c: 7.0, txt: 'HbA1c <7%', sub: '多數非孕期成人；可用 CGM 時 TIR >70%、TBR <4%', why: ['ADA 2026 第 6 章預設目標'] };
+}
+
+/* ---------- 4. 指引建議 ---------- */
+function egfrOf(s) { return num(s.egfr); }
+function ckdState(s) {
+  const e = egfrOf(s), u = num(s.uacr);
+  return { e, u, ckd: (e !== null && e < 60) || (u !== null && u >= 30) };
+}
+function recommend(s, c, tg) {
+  const L = [], add = (pri, cls, why, more) => L.push({ pri, cls, why, more: more || '' });
+  const a1c = num(s.a1c), glu = Math.max(num(s.fpg) || 0, num(s.rpg) || 0);
+  const k = ckdState(s), bmi = num(s.bmi);
+  if (s.crisis) add('急', '高血糖危象處置', '疑似 DKA／HHS：靜脈輸液、胰島素靜脈滴注、補鉀與找誘因', '可使用本系列 DKA／HHS 頁面');
+  if (!c.type) return L;
+  if (c.type === 'gdm') {
+    add('首選', '醫學營養治療＋運動＋自我血糖監測', '多數妊娠糖尿病以生活型態即可達標');
+    add('首選', '胰島素', '未達標時的首選藥物（不通過胎盤）');
+    add('避免', 'Metformin、glyburide 作為首選', '會通過胎盤，缺乏長期子代安全資料；僅在無法使用胰島素時考慮');
+    add('考慮', '產後 4–12 週 75 g OGTT，之後每 1–3 年篩檢', '日後第 2 型糖尿病風險高');
+    return L;
+  }
+  if (c.type === 't1') {
+    add('首選', '多次注射（基礎＋餐前速效類似物）或胰島素幫浦', '第 1 型需要生理性胰島素替代');
+    add('首選', 'CGM；可行時自動胰島素輸注系統（AID）', '降低低血糖、改善 TIR');
+    add('首選', '醣類計算與低血糖衛教（含升糖素）', '');
+    add('避免', 'SGLT2 抑制劑', '第 1 型未核准，增加 DKA（含血糖正常 DKA）風險');
+    add('考慮', '篩檢自體免疫甲狀腺疾病與乳糜瀉', '');
+    return L;
+  }
+  if (c.type === 'other' && s.steroid) add('首選', '依類固醇時間給藥：早上 NPH（隨類固醇劑量調整）', '類固醇高血糖以午後至傍晚為主');
+  if (c.type === 'other' && s.mody) add('首選', '依基因型治療（HNF1A／HNF4A：低劑量 SU；GCK：多不需藥物）', '');
+
+  // 嚴重高血糖
+  const severe = (a1c !== null && a1c > 10) || glu >= 300 || s.wtLoss || s.dka;
+  if (severe) add('首選', '起始胰島素（基礎胰島素 ± 餐前）', `${a1c !== null && a1c > 10 ? `HbA1c ${a1c}% >10%` : glu >= 300 ? `血糖 ${glu} ≥300` : '有分解代謝表現（體重下降、酮體）'}：先用胰島素解除糖毒性，穩定後可再降階`, '可同時合併 GLP-1 類藥物');
+
+  // Metformin
+  if (k.e !== null && k.e < 30) add('避免', 'Metformin', `eGFR ${k.e} <30：禁用`);
+  else if (s.met === 'contra' || s.met === 'intol') add('避免', 'Metformin', '已記錄禁忌或不耐受');
+  else add('首選', 'Metformin（基礎用藥）', k.e !== null && k.e < 45 ? `eGFR ${k.e}：每日上限 1000 mg，定期追蹤腎功能與 B12` : '具成本效益，低血糖風險低；長期使用注意 B12', s.met === 'max' ? '已達最大耐受劑量' : '');
+
+  // 器官保護（不論 HbA1c）
+  if (s.hf) add('首選', 'SGLT2 抑制劑', '心衰竭（不論射出分率）：降低心衰竭住院與心血管死亡，與 HbA1c 無關');
+  if (k.ckd) {
+    if (k.e === null || k.e >= 20) add('首選', 'SGLT2 抑制劑', `CKD（${k.e !== null ? `eGFR ${k.e}` : ''}${k.u !== null ? ` UACR ${k.u}` : ''}）：eGFR ≥20 即可起始，延緩腎功能惡化`);
+    if (k.u !== null && k.u >= 30 && (k.e === null || k.e >= 25)) add('考慮', '非類固醇 MRA（finerenone）', 'UACR ≥30 且已用最大耐受 ACEI/ARB、血鉀正常時，降低腎與心血管事件');
+    add('考慮', 'GLP-1 RA（semaglutide）', '有腎臟與心血管結果證據（FLOW），需要再降血糖時優先');
+    if (!s.acearb) add('首選', 'ACEI 或 ARB（最大耐受劑量）', '合併高血壓或白蛋白尿時');
+  }
+  if (s.ascvd) add('首選', '具心血管實證的 GLP-1 RA 和／或 SGLT2 抑制劑', '已確立動脈硬化心血管疾病：降低主要心血管事件，與 HbA1c 無關');
+  if (bmi !== null && bmi >= 27) add('首選', 'GLP-1 RA 或 tirzepatide（GIP/GLP-1）', `BMI ${bmi}（台灣肥胖 ≥27）：體重下降效果最大`, 'ADA 2026：無嚴重高血糖時，GLP-1 類藥物可作為初始或追加治療的優先選擇');
+  else if (!severe && a1c !== null && tg.a1c !== null && a1c > tg.a1c) add('考慮', 'GLP-1 類藥物', 'ADA 2026：無嚴重高血糖時，GLP-1 類藥物可作為初始或追加降糖治療的優先選擇');
+  if (s.masld) add('考慮', 'GLP-1 RA、tirzepatide 或 pioglitazone', 'MASLD／MASH 合併第 2 型糖尿病');
+  const hypo = s.hypoRisk || s.frail || s.health === 'complex' || s.health === 'vcomplex';
+  if (hypo) {
+    add('避免', 'Sulfonylurea、glinide；胰島素需謹慎調整', '低血糖高風險（長者、衰弱、獨居、認知障礙、腎功能差）');
+    if (a1c !== null && tg.a1c !== null && a1c < tg.a1c - 0.5 && (s.su || num(s.ins) > 0)) add('首選', '降階治療：停用或減少 SU／胰島素', `HbA1c ${a1c}% 已低於目標 ${tg.txt}，且使用易致低血糖藥物`);
+    add('考慮', 'DPP-4 抑制劑', '低血糖風險低、耐受性佳（linagliptin 不需依腎功能調整）');
+  }
+  if (!severe && a1c !== null && tg.a1c !== null && a1c > tg.a1c && !s.hf && !k.ckd && !s.ascvd && !(bmi !== null && bmi >= 27)) {
+    add('考慮', '依成本與副作用選擇第二線：SGLT2i、DPP-4i、TZD、SU', '無心腎共病時，考慮成本、低血糖、體重與可近性');
+  }
+  const oral = ['su', 'dpp4', 'sglt2', 'tzd'].filter(x => s[x]).length + (s.met === 'max' || s.met === 'sub' ? 1 : 0);
+  if (oral >= 3 && a1c !== null && tg.a1c !== null && a1c > tg.a1c) add('首選', '加上注射治療（GLP-1 RA 或基礎胰島素）', '三種口服藥仍未達標');
+  // 去重：同一類藥只留最高優先
+  const rank = { '急': 0, '首選': 1, '考慮': 2, '避免': 3 };
+  const seen = {};
+  L.forEach(x => { const key = x.cls; if (!seen[key] || rank[x.pri] < rank[seen[key].pri]) seen[key] = x; else if (seen[key] !== x && x.why && !seen[key].why.includes(x.why)) seen[key].why += '；' + x.why; });
+  return Object.values(seen).sort((a, b) => rank[a.pri] - rank[b.pri]);
+}
+
+/* ---------- 5. 健保給付檢核 ---------- */
+// status: ok 符合 / cond 尚缺條件 / no 不符 / self 未列給付條文（多為自費）
+function nhi(s, c, tg) {
+  const out = [];
+  if (!c.type) return out;
+  const push = (drug, status, rule, why, miss) => out.push({ drug, status, rule, why, miss: miss || [] });
+  const a1c = num(s.a1c), months = num(s.addMo), ins = num(s.ins) || 0;
+  const goal = tg.a1c !== null ? tg.a1c : 7.0;
+  const uncontrolled = a1c !== null && a1c > goal;
+  const metMax = s.met === 'max', metNA = s.met === 'contra' || s.met === 'intol';
+  const metOK = metMax || metNA;
+  const suMax = !!s.suMax;
+
+  if (c.type === 'gdm' || s.ctx === 'preg') {
+    push('胰島素', 'ok', '5.1 藥品種類 (1)', '各類胰島素皆屬給付品項');
+    push('口服降血糖藥', 'cond', '仿單', '孕期多非核准適應症，處方前確認仿單與知情同意');
+    return out;
+  }
+  if (c.type === 't1') {
+    push('胰島素（各類，含類似物）', 'ok', '5.1 藥品種類 (1)', '短、中、長效、速效、預混型皆可');
+    push('SGLT2、DPP-4、GLP-1 RA', 'no', '5.1.2(2)、5.1.3、5.1.5', '給付條文限第二型糖尿病');
+    push('SGLT2（CKD 適應症）', 'no', '2.16 第 2 點', '第 1 型糖尿病為排除條件');
+    return out;
+  }
+
+  // Metformin
+  if ((num(s.egfr) !== null && num(s.egfr) < 30) || s.met === 'contra') push('Metformin', 'no', '仿單', '禁忌（eGFR <30 或其他禁忌）');
+  else push('Metformin', 'ok', '5.1 使用條件 2(1)', '第二型糖尿病原則上優先使用');
+
+  // SU / glinide / AGI
+  if (s.met === 'none' && !metNA) push('Sulfonylurea、glinide、acarbose', 'cond', '5.1 使用條件 2(1)', '原則上先用 metformin；有過敏、禁忌、不耐受或仍未理想控制時可用其他口服藥', ['先使用 metformin，或記錄禁忌／不耐受']);
+  else push('Sulfonylurea、glinide、acarbose', 'ok', '5.1 使用條件 2(1)、5.1.1', 'metformin 未能理想控制或無法使用時可加用');
+
+  // TZD / DPP-4 / SGLT2 (糖尿病適應症)
+  const base = [];
+  if (!metOK) base.push('已接受最大耐受劑量 metformin');
+  if (!uncontrolled) base.push(`仍無法理想控制（HbA1c 高於目標${a1c === null ? '，請輸入 HbA1c' : `；目前 ${a1c}%`}）`);
+  const metNote = metNA ? '（metformin 禁忌／不耐受：條文 2(2) 寫「已接受最大耐受劑量」，請在病歷載明無法使用的理由，實際審查依各分區）' : '';
+  push('TZD（pioglitazone）', base.length ? 'cond' : 'ok', '5.1 使用條件 2(2)', '限已接受最大耐受劑量 metformin 仍無法理想控制' + metNote, base);
+  const both = s.sglt2 && s.dpp4;
+  ['DPP-4 抑制劑', 'SGLT2 抑制劑（糖尿病適應症）'].forEach(n => {
+    const miss = base.slice();
+    const other = n.startsWith('DPP') ? s.sglt2 : s.dpp4;
+    let why = '限已接受最大耐受劑量 metformin 仍無法理想控制；SGLT2 與 DPP-4 宜二擇一' + metNote;
+    if (other) { why += '。目前已在使用另一類，若要兩者併用須改用複方並符合 5.1.6–5.1.8'; }
+    push(n, miss.length ? 'cond' : other ? 'cond' : 'ok', '5.1 使用條件 2(2)、5.1.5', why, miss.concat(other ? ['與另一類（SGLT2／DPP-4）擇一'] : []));
+  });
+
+  // SGLT2 + DPP-4 複方
+  {
+    const miss = [];
+    if (!metMax) miss.push('已接受最大耐受劑量 metformin');
+    if (!(s.sglt2 || s.dpp4) || months === null || months < 6) miss.push('併用其中一個成分（SGLT2 或 DPP-4）≥6 個月');
+    if (!(a1c !== null && a1c > 7.5)) miss.push(`HbA1c >7.5%${a1c !== null ? `（目前 ${a1c}%）` : ''}`);
+    push('SGLT2＋DPP-4 複方（Glyxambi、Qtern、Steglujan）', miss.length ? 'cond' : 'ok', '5.1.6–5.1.8', '每日限 1 粒', miss);
+  }
+
+  // SGLT2：心衰竭 2.16-1
+  if (s.hf) {
+    const lvef = num(s.lvef), miss = [];
+    if (lvef === null) miss.push('LVEF（一年內心臟超音波等標準檢查）');
+    else if (lvef > 49) miss.push(`LVEF ${lvef}% >49%：2.16 只給付 LVEF ≤49%`);
+    if (!s.nyha2) miss.push('NYHA II–IV');
+    if (!s.hfMeds) miss.push('ACEI/ARB 穩定劑量＋β 阻斷劑最大耐受劑量 ≥4 週（或 β 阻斷劑禁忌）仍有症狀');
+    if (lvef !== null && lvef >= 41 && lvef <= 49 && !s.hfHosp) miss.push('LVEF 41–49%：需曾因心衰竭住院或經心臟專科醫師診斷');
+    const no = lvef !== null && lvef > 49;
+    push('Dapagliflozin／empagliflozin 10 mg（心衰竭）', no ? 'no' : miss.length ? 'cond' : 'ok', '2.16 第 1 點', '心衰竭適應症不要求先用 metformin；每日最多 1 粒', no ? miss : miss);
+  }
+  // SGLT2：CKD 2.16-2
+  const e = num(s.egfr), u = num(s.uacr);
+  if (e !== null || u !== null) {
+    const miss = [];
+    if (!(e !== null && e >= 25 && e <= 60)) miss.push(`起始 eGFR 25–60${e !== null ? `（目前 ${e}）` : ''}`);
+    if (!(u !== null && u >= 200 && u <= 5000)) miss.push(`UACR 200–5000 mg/g${u !== null ? `（目前 ${u}）` : ''}`);
+    if (!s.acearb) miss.push('最大耐受劑量 ACEI 或 ARB 穩定使用 ≥4 週');
+    if (!s.ckdProg) miss.push('參加「初期慢性腎臟病照護整合方案」或「Pre-ESRD 照護與衛教計畫」');
+    if (s.ckdExcl) miss.push('有排除條件（多囊腎、狼瘡腎炎、ANCA 血管炎、6 個月內化療／免疫抑制、器官移植、近期 MI／不穩定心絞痛／中風、12 週內 TIA 或血管重建）');
+    const hard = (e !== null && (e < 25 || e > 60)) || (u !== null && (u < 200 || u > 5000)) || s.ckdExcl;
+    const ckdLike = (e !== null && e < 60) || (u !== null && u >= 30);
+    if (ckdLike) push('Dapagliflozin／empagliflozin 10 mg（慢性腎臟病）', miss.length ? (hard ? 'no' : 'cond') : 'ok', '2.16 第 2 點', 'CKD 適應症不要求 metformin 失敗；eGFR 降至 <15 應停藥', miss);
+  }
+
+  // GLP-1 RA
+  const mace = !!s.mace;
+  const sglOrDpp = s.sglt2 || s.dpp4;
+  {
+    const routeA = [];
+    if (!(metMax || suMax)) routeA.push('已接受最大耐受劑量 metformin 及／或 SU');
+    if (!(s.sglt2 || s.dpp4 || ins > 0) || months === null || months < 6) routeA.push('併用 SGLT2、DPP-4、SGLT2+DPP-4 複方或胰島素其一 ≥6 個月');
+    if (!(a1c !== null && a1c > 8.5)) routeA.push(`HbA1c 高於 8.5%${a1c !== null ? `（目前 ${a1c}%）` : ''}`);
+    const routeB = [];
+    if (!mace) routeB.push('重大心血管事件（心肌梗塞、冠狀動脈或其他動脈血管再通術、動脈硬化缺血性中風）');
+    if (!metMax) routeB.push('已接受最大耐受劑量 metformin');
+    if (!uncontrolled) routeB.push('仍無法理想控制');
+    const okA = !routeA.length, okB = !routeB.length;
+    const stop = sglOrDpp ? ['開始 GLP-1 RA 時須停用 SGLT2／DPP-4（條文第 4 點不得併用）；若因心腎保護需同時使用，其一需自費'] : [];
+    let st = okA || okB ? (stop.length ? 'cond' : 'ok') : 'cond';
+    const why = okB && !okA ? '符合第 3 點心血管事件途徑：不須先用其他口服藥（限 liraglutide、dulaglutide、semaglutide）' : okA ? '符合第 1 點：口服藥／胰島素 6 個月後 HbA1c 仍 >8.5%' : '兩條途徑擇一：第 1 點（6 個月＋HbA1c >8.5%）或第 3 點（重大心血管事件＋metformin 失敗）';
+    push('GLP-1 RA（liraglutide、dulaglutide、semaglutide 注射）', st, '5.1.3.2', why + '；可與口服藥及／或基礎胰島素併用', okA || okB ? stop : [...routeA.map(x => '途徑 1：' + x), ...routeB.map(x => '途徑 3：' + x)]);
+  }
+  // Exenatide
+  {
+    const miss = [];
+    if (!(metMax || suMax)) miss.push('已接受最大耐受劑量 metformin 及／或 SU');
+    if (!uncontrolled) miss.push('仍無法理想控制');
+    if (ins > 0 || sglOrDpp) miss.push('不得與胰島素、DPP-4、SGLT2 併用');
+    push('Exenatide（Byetta）', miss.length ? 'cond' : 'ok', '5.1.3.1', '', miss);
+  }
+  // iGlarLixi
+  {
+    const miss = [];
+    if (!(metMax || suMax)) miss.push('已接受最大耐受劑量 metformin 及／或 SU');
+    if (!(s.sglt2 || s.dpp4 || ins > 0) || months === null || months < 6) miss.push('併用 SGLT2、DPP-4、複方或胰島素（<60 U/日）其一 ≥6 個月');
+    if (ins >= 60) miss.push(`胰島素每日 <60 單位（目前 ${ins} U）`);
+    if (!(a1c !== null && a1c > 8.0)) miss.push(`HbA1c 高於 8.0%${a1c !== null ? `（目前 ${a1c}%）` : ''}`);
+    if (num(s.age) !== null && num(s.age) < 18) miss.push('限成人');
+    if (sglOrDpp) miss.push('不得與 DPP-4、SGLT2 併用');
+    push('Insulin glargine＋lixisenatide（Soliqua）', miss.length ? 'cond' : 'ok', '5.1.3.3', '', miss);
+  }
+  // Insulin
+  {
+    const oral = ['su', 'dpp4', 'sglt2', 'tzd'].filter(x => s[x]).length + (s.met === 'max' || s.met === 'sub' ? 1 : 0);
+    push('胰島素（各類）', 'ok', '5.1 使用條件 2(1)、2(3)', oral >= 3 && uncontrolled ? '已使用三種口服藥仍未理想控制：條文建議宜考慮胰島素' : '可早期開始使用');
+  }
+  push('Tirzepatide、口服 semaglutide、finerenone', 'self', '第五節／第二節未列', '未見專屬給付條文；是否收載請以健保用藥品項查詢為準，臨床多為自費');
+  return out;
+}
+
+/* ---------- 6. 下一步 ---------- */
+function nextSteps(s, d, c) {
+  const n = [...d.next, ...c.next];
+  if (['dm', 'probable'].includes(d.status) && s.ctx !== 'preg' && !c.type) n.push('補上年齡與 BMI 以進行分型');
+  if (c.type === 't2' || c.type === 'other') {
+    if (!has(s.egfr)) n.push('eGFR：決定 metformin 劑量與 SGLT2 適用');
+    if (!has(s.uacr)) n.push('UACR：白蛋白尿決定腎臟保護策略與健保 2.16');
+    if (!has(s.bmi)) n.push('BMI：肥胖時優先考慮 GLP-1 類藥物');
+    if (!s.met) n.push('目前 metformin 使用狀態：健保第二線藥物的前提');
+    if (!has(s.a1c)) n.push('HbA1c：個別化目標與健保門檻（7.5%、8.0%、8.5%）都需要');
+  }
+  if (c.type === 't2' && ['dm'].includes(d.status)) n.push('新診斷或年度：眼底、足部、UACR、血脂、血壓、肝功能（MASLD）評估');
+  return [...new Set(n)];
+}
+
+function evaluate(s) {
+  s = s || {};
+  const d = diagnose(s), c = classify(s, d), tg = target(s, c);
+  return { d, c, tg, rec: recommend(s, c, tg), nhi: nhi(s, c, tg), next: nextSteps(s, d, c) };
+}
+
+const api = { NHI_VER, TH, diagnose, classify, target, recommend, nhi, evaluate, num };
+if (typeof module !== 'undefined') module.exports = api;
+return api;
+})();
+/*ENGINE-END*/
+
+/* ===================== UI ===================== */
+const $ = id => document.getElementById(id);
+const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const LS = 'dm-dx-tx-v1';
+const blank = () => ({ ctx: 'nonpreg', ogMode: 'one' });
+let S = (() => { try { const x = JSON.parse(localStorage.getItem(LS)); if (x && typeof x === 'object') return Object.assign(blank(), x); } catch (e) {} return blank(); })();
+const save = () => { try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} };
+let R = null;
+
+const isPreg = s => s.ctx === 'preg';
+const notPreg = s => s.ctx !== 'preg';
+// field registry: t = num | sel | chk; L = layer; w = visible when
+const F = {
+  ctx: { L: 1, t: 'sel', l: '情境', o: [['nonpreg', '非孕期'], ['preg', '懷孕中']], noBlank: true },
+  known: { L: 1, t: 'chk', l: '先前已確診糖尿病（直接進入治療）', w: notPreg },
+  a1c: { L: 1, t: 'num', l: 'HbA1c', u: '%', step: 0.1 },
+  fpg: { L: 1, t: 'num', l: '空腹血漿葡萄糖', u: 'mg/dL' },
+  ogtt: { L: 1, t: 'num', l: '75 g OGTT 2 h', u: 'mg/dL', w: notPreg },
+  rpg: { L: 1, t: 'num', l: '隨機血漿葡萄糖', u: 'mg/dL' },
+  ga: { L: 1, t: 'num', l: '孕週', u: '週', w: isPreg },
+  ogMode: { L: 1, t: 'sel', l: '妊娠篩檢方式', o: [['one', '一階段 75 g OGTT'], ['two', '兩階段 50 g → 100 g']], noBlank: true, w: isPreg },
+  ogF: { L: 1, t: 'num', l: '75 g 空腹', u: 'mg/dL', w: s => isPreg(s) && s.ogMode !== 'two' },
+  ogH1: { L: 1, t: 'num', l: '75 g 1 h', u: 'mg/dL', w: s => isPreg(s) && s.ogMode !== 'two' },
+  ogH2: { L: 1, t: 'num', l: '75 g 2 h', u: 'mg/dL', w: s => isPreg(s) && s.ogMode !== 'two' },
+  gct: { L: 1, t: 'num', l: '50 g GCT 1 h', u: 'mg/dL', w: s => isPreg(s) && s.ogMode === 'two' },
+  cF: { L: 1, t: 'num', l: '100 g 空腹', u: 'mg/dL', w: s => isPreg(s) && s.ogMode === 'two' },
+  cH1: { L: 1, t: 'num', l: '100 g 1 h', u: 'mg/dL', w: s => isPreg(s) && s.ogMode === 'two' },
+  cH2: { L: 1, t: 'num', l: '100 g 2 h', u: 'mg/dL', w: s => isPreg(s) && s.ogMode === 'two' },
+  cH3: { L: 1, t: 'num', l: '100 g 3 h', u: 'mg/dL', w: s => isPreg(s) && s.ogMode === 'two' },
+  sym: { L: 1, t: 'chk', l: '典型高血糖症狀（多尿、多喝、體重減輕）' },
+  crisis: { L: 1, t: 'chk', l: '疑似高血糖危象（DKA／HHS）' },
+  a1cUnrel: { L: 1, t: 'chk', l: 'HbA1c 可能失真（血紅素病變、失血、輸血、透析、EPO…）', w: notPreg },
+  repeatOk: { L: 1, t: 'chk', l: '已重複檢驗，再次達糖尿病門檻', w: notPreg },
+
+  age: { L: 2, t: 'num', l: '年齡', u: '歲' },
+  bmi: { L: 2, t: 'num', l: 'BMI', u: 'kg/m²', step: 0.1, h: '台灣：過重 ≥24、肥胖 ≥27' },
+  ab: { L: 2, t: 'sel', l: '胰島自體抗體', o: [['unk', '未驗'], ['pos', '陽性'], ['neg', '陰性']], w: notPreg },
+  cpep: { L: 2, t: 'sel', l: 'C-peptide', o: [['unk', '未驗'], ['low', '偏低'], ['normal', '正常或偏高']], w: notPreg },
+  typeSel: { L: 2, t: 'sel', l: '分型（手動指定）', o: [['t1', '第 1 型'], ['t2', '第 2 型'], ['other', '其他特定型']], h: '未輸入＝依線索自動判斷', w: notPreg },
+  dka: { L: 2, t: 'chk', l: '發病時 DKA 或酮體陽性', w: notPreg },
+  wtLoss: { L: 2, t: 'chk', l: '近期非刻意體重下降', w: notPreg },
+  steroid: { L: 2, t: 'chk', l: '使用類固醇或其他致高血糖藥物', w: notPreg },
+  pancreas: { L: 2, t: 'chk', l: '慢性胰臟炎或胰臟手術', w: notPreg },
+  mody: { L: 2, t: 'chk', l: '多代家族史、年輕發病（疑 MODY）', w: notPreg },
+
+  egfr: { L: 3, t: 'num', l: 'eGFR', u: 'mL/min/1.73m²' },
+  uacr: { L: 3, t: 'num', l: 'UACR', u: 'mg/g' },
+  lvef: { L: 3, t: 'num', l: 'LVEF', u: '%', w: s => !!s.hf },
+  health: { L: 3, t: 'sel', l: '整體健康狀態（長者）', o: [['healthy', '健康'], ['complex', '複雜／中度（多重慢性病、輕度認知或功能障礙）'], ['vcomplex', '極複雜（長照、末期、重度失智）']], w: notPreg },
+  ascvd: { L: 3, t: 'chk', l: '已確立 ASCVD（冠心症、腦血管、周邊動脈疾病）', w: notPreg },
+  mace: { L: 3, t: 'chk', l: '曾發生心肌梗塞、動脈血管再通術或動脈硬化缺血性中風', w: notPreg, h: '健保 GLP-1 RA 第 3 點' },
+  hf: { L: 3, t: 'chk', l: '心衰竭', w: notPreg },
+  nyha2: { L: 3, t: 'chk', l: 'NYHA II–IV', w: s => !!s.hf },
+  hfMeds: { L: 3, t: 'chk', l: 'ACEI/ARB＋β 阻斷劑最大耐受劑量 ≥4 週仍有症狀', w: s => !!s.hf },
+  hfHosp: { L: 3, t: 'chk', l: '曾因心衰竭住院或經心臟專科醫師診斷', w: s => !!s.hf },
+  acearb: { L: 3, t: 'chk', l: '已用最大耐受劑量 ACEI 或 ARB ≥4 週', w: notPreg },
+  ckdProg: { L: 3, t: 'chk', l: '已參加初期 CKD 照護整合方案或 Pre-ESRD 計畫', w: notPreg },
+  ckdExcl: { L: 3, t: 'chk', l: '有 2.16 CKD 排除條件（多囊腎、狼瘡、ANCA、移植、近期急性冠心症或中風…）', w: notPreg },
+  masld: { L: 3, t: 'chk', l: 'MASLD／MASH', w: notPreg },
+  hypoRisk: { L: 3, t: 'chk', l: '低血糖高風險（反覆低血糖、獨居、認知障礙、無感性低血糖）', w: notPreg },
+  lifeLtd: { L: 3, t: 'chk', l: '預期壽命有限', w: notPreg },
+  goalLow: { L: 3, t: 'chk', l: '希望較嚴格目標（健康、病程短、低血糖風險低）', w: notPreg },
+
+  met: { L: 4, t: 'sel', l: 'Metformin', o: [['none', '未使用'], ['sub', '使用中，未達最大耐受劑量'], ['max', '已達最大耐受劑量'], ['intol', '不耐受'], ['contra', '禁忌']], w: notPreg },
+  ins: { L: 4, t: 'num', l: '胰島素每日總量', u: 'U/日', w: notPreg },
+  addMo: { L: 4, t: 'num', l: '目前合併用藥已持續', u: '月', h: '健保 6 個月門檻（GLP-1 RA、複方）', w: notPreg },
+  su: { L: 4, t: 'chk', l: 'Sulfonylurea', w: notPreg },
+  suMax: { L: 4, t: 'chk', l: 'SU 已達最大耐受劑量', w: s => notPreg(s) && !!s.su },
+  dpp4: { L: 4, t: 'chk', l: 'DPP-4 抑制劑', w: notPreg },
+  sglt2: { L: 4, t: 'chk', l: 'SGLT2 抑制劑', w: notPreg },
+  tzd: { L: 4, t: 'chk', l: 'Pioglitazone', w: notPreg },
+  glp1: { L: 4, t: 'chk', l: 'GLP-1 RA', w: notPreg }
+};
+const LAYERS = [
+  { n: 1, t: '情境與檢驗', d: '診斷是否成立' },
+  { n: 2, t: '分型線索', d: '第 1 型、第 2 型或其他' },
+  { n: 3, t: '共病與健康狀態', d: '目標、器官保護、健保 2.16' },
+  { n: 4, t: '目前用藥', d: '健保第二線與 GLP-1 門檻' }
+];
+const filled = (s, f) => F[f].t === 'chk' ? !!s[f] : (s[f] !== undefined && s[f] !== null && s[f] !== '');
+
+function fieldHTML(id) {
+  const f = F[id], v = S[id], da = `data-f="${id}"`;
+  if (f.t === 'chk') return `<label class="check" data-w="${id}"><input type="checkbox" ${da} ${v ? 'checked' : ''}><span>${esc(f.l)}${f.h ? ` <span class="hint">（${esc(f.h)}）</span>` : ''}</span></label>`;
+  const hint = f.h ? `<span class="hint">${esc(f.h)}</span>` : '';
+  if (f.t === 'num') return `<label class="field" data-w="${id}"><span class="flabel">${esc(f.l)}</span><span class="inl"><input type="number" inputmode="decimal" step="${f.step || 'any'}" ${da} value="${v === undefined || v === null ? '' : esc(v)}">${f.u ? `<span class="u">${esc(f.u)}</span>` : ''}</span>${hint}</label>`;
+  const opts = (f.noBlank ? '' : `<option value="">未輸入</option>`) + f.o.map(o => `<option value="${o[0]}" ${v === o[0] ? 'selected' : ''}>${esc(o[1])}</option>`).join('');
+  return `<label class="field" data-w="${id}"><span class="flabel">${esc(f.l)}</span><select ${da}>${opts}</select>${hint}</label>`;
+}
+function renderSheet() {
+  $('sheet').innerHTML = LAYERS.map(L => {
+    const ids = Object.keys(F).filter(f => F[f].L === L.n);
+    const nums = ids.filter(f => F[f].t !== 'chk'), chks = ids.filter(f => F[f].t === 'chk');
+    return `<details class="layer" data-layer="${L.n}" ${L.n <= 2 ? 'open' : ''}><summary><span class="n">${L.n}</span><span class="t">${L.t} <span class="small muted" style="font-weight:400">${L.d}</span></span><span class="lstat pill mute"></span></summary><div class="lb">
+      ${nums.length ? `<div class="grid2">${nums.map(fieldHTML).join('')}</div>` : ''}
+      ${chks.length ? `<div>${chks.map(fieldHTML).join('')}</div>` : ''}
+    </div></details>`;
+  }).join('');
+}
+function syncSheet() {
+  document.querySelectorAll('#sheet [data-f]').forEach(el => {
+    const v = S[el.dataset.f];
+    if (el.type === 'checkbox') el.checked = !!v;
+    else if (document.activeElement !== el) el.value = v === undefined || v === null ? (F[el.dataset.f].noBlank ? F[el.dataset.f].o[0][0] : '') : v;
+  });
+  document.querySelectorAll('#sheet [data-w]').forEach(el => { const f = F[el.dataset.w]; el.hidden = f.w ? !f.w(S) : false; });
+  LAYERS.forEach(L => {
+    const ids = Object.keys(F).filter(f => F[f].L === L.n && !F[f].noBlank && (!F[f].w || F[f].w(S)));
+    const n = ids.filter(f => filled(S, f)).length;
+    const el = document.querySelector(`#sheet details[data-layer="${L.n}"] .lstat`);
+    if (el) el.textContent = n ? `已填 ${n}` : '未填';
+    const d = document.querySelector(`#sheet details[data-layer="${L.n}"]`);
+    if (d) d.hidden = !ids.length;
+  });
+}
+
+const ST = { ok: ['go', '符合'], cond: ['warn', '尚缺條件'], no: ['stop', '不符'], self: ['mute', '未列條文'] };
+const PRI = { '急': 'p0', '首選': 'p1', '考慮': 'p2', '避免': 'p3' };
+const PRIPILL = { '急': 'stop', '首選': 'go', '考慮': 'ev', '避免': 'stop' };
+const TST = { dm: ['stop', '達糖尿病門檻'], pre: ['warn', '前期範圍'], normal: ['go', '正常'] };
+
+function renderStatus() {
+  const d = R.d, c = R.c;
+  const a1c = DM.num(S.a1c);
+  $('status').innerHTML = `<div class="kbox">${a1c === null ? '—' : a1c}<small>HbA1c %</small></div>
+    <div class="grow"><div class="phase">${esc(d.label || '輸入檢驗值開始')}</div><div class="prog"><i style="width:${progress()}%"></i></div></div>
+    ${d.status !== 'incomplete' ? `<span class="grp ${d.status}">${esc({ dm: '糖尿病', probable: '待確認', pre: '前期', normal: '未達標準', gdm: '妊娠糖尿病', overt: '孕前糖尿病' }[d.status])}</span>` : ''}
+    ${c.type ? `<span class="grp t">${esc({ t1: '第 1 型', t2: '第 2 型', gdm: 'GDM', other: '其他特定型' }[c.type])}</span>` : ''}
+    ${R.tg && c.type ? `<span class="grp">目標 ${esc(R.tg.txt.split('（')[0])}</span>` : ''}
+    <div class="acts"><button class="btn sm primary" type="button" id="copySum">複製摘要</button><button class="btn sm" type="button" id="resetAll">清除</button></div>`;
+}
+function progress() {
+  const steps = [R.d.status !== 'incomplete', ['dm', 'gdm', 'overt'].includes(R.d.status), !!R.c.type, R.rec.length > 0, R.nhi.length > 0];
+  return Math.round(steps.filter(Boolean).length / steps.length * 100);
+}
+function renderResults() {
+  const d = R.d, c = R.c;
+  $('nextBox').innerHTML = R.next.length ? `<ul class="plain">${R.next.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '<p class="muted small">目前資料已足夠完成判讀。</p>';
+  const warn = d.warn.map(w => `<div class="alert ${/危象/.test(w) ? 'stop' : 'warn'}"><strong>${/危象/.test(w) ? '急症' : '注意'}</strong><span class="small">${esc(w)}</span></div>`).join('');
+  const tbl = d.tests.length ? `<div class="tablebox"><table><thead><tr><th>檢驗</th><th>數值</th><th>判讀</th></tr></thead><tbody>${d.tests.map(t => `<tr><td>${esc(t.n)}</td><td class="mono">${t.v} ${esc(t.u)}</td><td><span class="pill ${(TST[t.st] || TST.normal)[0]}">${esc((TST[t.st] || TST.normal)[1])}</span></td></tr>`).join('')}</tbody></table></div>` : '';
+  $('dxBox').innerHTML = `<div class="stack" style="gap:10px">${warn}${d.label ? `<div class="final" style="background:var(--${d.confirmed ? 'stop' : d.status === 'normal' ? 'go' : 'warn'}-soft)"><b style="color:var(--${d.confirmed ? 'stop' : d.status === 'normal' ? 'go' : 'warn'})">${esc(d.label)}</b>${d.reasons.length ? `<ul class="plain">${d.reasons.map(r => `<li>${esc(r)}</li>`).join('')}</ul>` : ''}</div>` : '<p class="muted small">尚未輸入檢驗值。</p>'}${tbl}</div>`;
+  $('typeBox').innerHTML = c.type ? `<p><b>${esc(c.label)}</b></p>${c.clues.length ? `<div class="why">${c.clues.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : ''}` : `<p class="muted small">${d.status === 'pre' ? '前期：不需分型，重點在生活型態與每年追蹤。' : '診斷成立或達門檻後才分型。'}</p>`;
+  $('tgBox').innerHTML = c.type ? `<p><b>${esc(R.tg.txt)}</b></p><p class="small muted">${esc(R.tg.sub)}</p><div class="why">${R.tg.why.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : '<p class="muted small">—</p>';
+  $('recBox').innerHTML = R.rec.length ? R.rec.map(x => `<div class="opt ${PRI[x.pri]}"><div><span class="pill ${PRIPILL[x.pri]}">${esc(x.pri)}</span> <b>${esc(x.cls)}</b></div>${x.why ? `<span>${esc(x.why)}</span>` : ''}${x.more ? `<span class="small" style="color:var(--accent)">${esc(x.more)}</span>` : ''}</div>`).join('') : '<p class="muted small">完成診斷與分型後列出。</p>';
+  $('nhiBox').innerHTML = R.nhi.length ? `<div class="tablebox"><table class="nt"><thead><tr><th>藥品</th><th>結果</th><th>依據與說明</th></tr></thead><tbody>${R.nhi.map(n => `<tr><td>${esc(n.drug)}</td><td><span class="pill ${ST[n.status][0]}">${ST[n.status][1]}</span></td><td><span class="rule">${esc(n.rule)}</span>${n.why ? `<div class="small">${esc(n.why)}</div>` : ''}${n.miss.length ? `<ul class="miss">${n.miss.map(m => `<li>${esc(m)}</li>`).join('')}</ul>` : ''}</td></tr>`).join('')}</tbody></table></div><p class="note" style="margin-top:8px">「理想控制」以本頁個別化目標判斷；條文未定義具體數值，審查以分區共識為準。</p>` : '<p class="muted small">完成分型後檢核。</p>';
+}
+function renderAlgo() {
+  const d = R.d, c = R.c, on = new Set(['start']);
+  const k = DM.num(S.egfr), u = DM.num(S.uacr), a1c = DM.num(S.a1c), bmi = DM.num(S.bmi);
+  if (S.crisis) on.add('crisis');
+  if (isPreg(S)) { on.add('preg'); if (d.status === 'gdm') on.add('gdm'); if (d.status === 'overt') on.add('overt'); }
+  else {
+    on.add('nonpreg');
+    if (d.status === 'pre') on.add('pre');
+    if (d.status === 'probable') on.add('probable');
+    if (d.status === 'dm') on.add('dm');
+    if (c.type) on.add(c.type);
+    if (c.type === 't2') {
+      on.add('t2s');
+      const glu = Math.max(DM.num(S.fpg) || 0, DM.num(S.rpg) || 0);
+      if ((a1c !== null && a1c > 10) || glu >= 300 || S.wtLoss) on.add('severe');
+      if (S.hf || S.ascvd || (k !== null && k < 60) || (u !== null && u >= 30)) on.add('organ');
+      if (R.nhi.some(n => n.rule.startsWith('2.16') && n.status === 'ok')) on.add('nhi216');
+      if (S.mace) on.add('nhimace');
+      if ((bmi !== null && bmi >= 27) || S.masld) on.add('obese');
+      if (S.hypoRisk || S.health === 'complex' || S.health === 'vcomplex') on.add('hypo');
+      if (!on.has('organ') && !on.has('obese') && !on.has('severe')) on.add('std');
+      if (R.nhi.some(n => n.rule.startsWith('5.1 使用條件 2(2)') && n.status === 'ok')) on.add('nhi52');
+      if (R.nhi.some(n => n.rule === '5.1.3.2' && !n.miss.some(m => m.startsWith('途徑')) && !S.mace)) on.add('nhiglp');
+    }
+  }
+  document.querySelectorAll('#algo .nd').forEach(el => el.classList.toggle('on', on.has(el.dataset.k)));
+}
+function summary() {
+  const d = R.d, c = R.c, L = [];
+  L.push('【糖尿病評估摘要】' + new Date().toLocaleDateString('zh-TW'));
+  const vals = ['a1c', 'fpg', 'ogtt', 'rpg', 'egfr', 'uacr', 'bmi', 'age'].filter(f => filled(S, f) && (!F[f].w || F[f].w(S))).map(f => `${F[f].l} ${S[f]}${F[f].u ? ' ' + F[f].u : ''}`);
+  if (vals.length) L.push('資料：' + vals.join('、'));
+  L.push('診斷：' + (d.label || '未判讀') + (d.reasons.length ? '（' + d.reasons.join('；') + '）' : ''));
+  if (c.type) L.push('分型：' + c.label);
+  if (c.type) L.push('目標：' + R.tg.txt + '；' + R.tg.sub);
+  if (R.rec.length) L.push('建議：' + R.rec.map(x => `[${x.pri}] ${x.cls}`).join('；'));
+  if (R.nhi.length) L.push('健保：' + R.nhi.filter(n => n.status !== 'self').map(n => `${n.drug} ${ST[n.status][1]}${n.miss.length ? '（缺：' + n.miss.join('、') + '）' : ''}`).join('；'));
+  if (R.next.length) L.push('待補：' + R.next.join('；'));
+  return L.join('\n');
+}
+function renderAll() {
+  R = DM.evaluate(S);
+  syncSheet(); renderStatus(); renderResults(); renderAlgo(); save();
+}
+
+function setField(id, el) {
+  const f = F[id];
+  if (f.t === 'chk') S[id] = el.checked;
+  else if (f.t === 'num') S[id] = el.value === '' ? '' : +el.value;
+  else S[id] = el.value;
+  setTimeout(renderAll, 0);
+}
+document.addEventListener('input', e => { const id = e.target.dataset && e.target.dataset.f; if (id && F[id].t === 'num') setField(id, e.target); });
+document.addEventListener('change', e => { const id = e.target.dataset && e.target.dataset.f; if (id && F[id].t !== 'num') setField(id, e.target); });
+document.addEventListener('click', e => {
+  if (e.target.id === 'resetAll') { if (confirm('清除所有輸入？')) { S = blank(); renderAll(); toast('已清除'); } return; }
+  if (e.target.id === 'copySum') { copy(summary()); return; }
+  const lc = e.target.closest('[data-case]');
+  if (lc) { loadCase(+lc.dataset.case); return; }
+  const qa = e.target.closest('[data-qa]');
+  if (qa) { answer(qa.dataset.qa, +qa.dataset.opt); return; }
+  if (e.target.id === 'quizReset') { Q = {}; saveQ(); renderCases(); toast('已重設作答'); }
+});
+function copy(t) {
+  const done = () => toast('摘要已複製，可貼到病歷');
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(done, fallback); else fallback();
+  function fallback() { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) { toast('無法複製'); } ta.remove(); }
+}
+let tt; function toast(m) { const el = $('toast'); el.textContent = m; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 1800); }
+
+const TABS = ['ws', 'dx', 'tx', 'nhi', 'algo', 'cases', 'ref'];
+function showTab(t) {
+  TABS.forEach(x => { $(x).hidden = x !== t; $('tab-' + x).setAttribute('aria-selected', x === t); $('tab-' + x).tabIndex = x === t ? 0 : -1; });
+  try { localStorage.setItem(LS + '-tab', t); } catch (e) {}
+}
+document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (b) showTab(b.dataset.t); });
+document.querySelector('.tabs').addEventListener('keydown', e => {
+  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+  const i = TABS.indexOf(document.activeElement.dataset.t); if (i < 0) return;
+  const n = TABS[(i + (e.key === 'ArrowRight' ? 1 : TABS.length - 1)) % TABS.length]; showTab(n); $('tab-' + n).focus();
+});
+
+/* ===================== 教學病例 ===================== */
+const CASES = [
+  { t: '1 · 健檢 HbA1c 6.7%，空腹 118', d: '48 歲男性，公司健檢 HbA1c 6.7%、空腹血漿葡萄糖 118 mg/dL，同一次抽血。無多尿多喝，BMI 26.1，血壓 138/86，父親有糖尿病。',
+    s: { ctx: 'nonpreg', a1c: 6.7, fpg: 118, age: 48, bmi: 26.1, ab: 'unk' },
+    kp: ['無症狀時需要兩個異常結果；兩項不一致時重複「達門檻的那項」。', '若重複 HbA1c 仍 ≥6.5% 即確診第 2 型糖尿病。', 'ADA 2026 偏好早用 GLP-1 類，但健保第一線仍為 metformin。'],
+    qs: [
+      { q: '目前能否診斷糖尿病？', o: ['可以，HbA1c ≥6.5% 單次即可', '不行，需要確認；應重複 HbA1c', '不行，必須做 OGTT', '可以，因為有家族史'], a: 1, e: 'HbA1c 達門檻但 FPG 只在前期範圍，且無症狀。結果不一致時重複達門檻的檢驗（HbA1c）；再次 ≥6.5% 即確診。' },
+      { q: '兩週後 HbA1c 6.8%，確診第 2 型。無心腎共病、BMI 26.1，健保下最合理的起始用藥？', o: ['Semaglutide 注射', 'Metformin＋生活型態', 'Empagliflozin', '基礎胰島素'], a: 1, e: '健保 5.1 使用條件 2(1)：第二型原則上優先使用 metformin；SGLT2 需 metformin 最大劑量失敗，GLP-1 RA 需 6 個月＋HbA1c >8.5% 或重大心血管事件。' }
+    ] },
+  { t: '2 · 多尿多喝、隨機血糖 312', d: '52 歲女性，3 個月來多尿、口渴、體重下降 6 kg。門診隨機血漿葡萄糖 312 mg/dL，HbA1c 11.8%，尿酮微量，意識清楚、生命徵象穩定。BMI 25.4，eGFR 88。',
+    s: { ctx: 'nonpreg', rpg: 312, a1c: 11.8, sym: true, wtLoss: true, age: 52, bmi: 25.4, egfr: 88, ab: 'unk', met: 'none' },
+    kp: ['典型症狀＋隨機血糖 ≥200 單次即可診斷。', 'HbA1c >10%、血糖 ≥300 或分解代謝表現：起始胰島素解除糖毒性。', '中年、非肥胖、進展快：可驗 GAD 抗體排除 LADA。'],
+    qs: [
+      { q: '診斷需要再做確認性檢驗嗎？', o: ['需要，隨機血糖不能用來診斷', '不需要：典型症狀＋隨機血糖 ≥200 即可確診', '需要，一定要做 OGTT', '需要等 HbA1c 重複'], a: 1, e: 'ADA：有典型高血糖症狀或危象時，隨機血漿葡萄糖 ≥200 mg/dL 單次即可診斷。' },
+      { q: '最適當的起始治療？', o: ['只用 metformin 並 3 個月後追蹤', '基礎胰島素（± metformin），並評估酮體與分型', 'DPP-4 抑制劑', '先生活型態 3 個月'], a: 1, e: '體重下降、HbA1c 11.8%、血糖 >300：ADA 建議考慮起始胰島素；穩定後可再降階。胰島素屬健保給付品項。' }
+    ] },
+  { t: '3 · 23 歲、DKA 入院、GAD 陽性', d: '23 歲男性，BMI 20.5，兩週多尿多喝、嘔吐，以 DKA 入院（血糖 420 mg/dL）。HbA1c 10.9%，GAD65 抗體陽性，C-peptide 偏低。DKA 已緩解，準備出院。',
+    s: { ctx: 'nonpreg', rpg: 420, a1c: 10.9, sym: true, age: 23, bmi: 20.5, ab: 'pos', cpep: 'low', dka: true, wtLoss: true },
+    kp: ['自體抗體陽性＝第 1 型；終身胰島素替代（MDI 或幫浦）。', 'SGLT2 抑制劑不適用（DKA 風險）；健保 SGLT2、DPP-4、GLP-1 條文限第二型。', 'CGM、醣類計算、低血糖與病假日衛教。'],
+    qs: [
+      { q: '出院治療最適當的是？', o: ['Metformin＋SGLT2 抑制劑', '基礎＋餐前速效胰島素（MDI）與 CGM', '每日一次基礎胰島素即可', 'GLP-1 RA'], a: 1, e: '第 1 型需要生理性胰島素替代：基礎＋餐前，搭配 CGM 與醣類計算。' },
+      { q: '若日後合併 CKD（eGFR 45、UACR 400），可否依健保 2.16 使用 dapagliflozin？', o: ['可以，只要參加 CKD 方案', '不行：第 1 型糖尿病是 2.16 CKD 的排除條件', '可以，因為 eGFR 在 25–60', '只要 UACR ≥200 即可'], a: 1, e: '2.16 第 2 點 IV-i：第 1 型糖尿病為排除條件。' }
+    ] },
+  { t: '4 · Metformin 最大劑量，HbA1c 8.2%', d: '58 歲男性，第 2 型糖尿病 4 年，metformin 2000 mg/日（最大耐受劑量）已 1 年，HbA1c 8.2%。BMI 25.8，eGFR 78，UACR 12，無心血管疾病，無低血糖。',
+    s: { ctx: 'nonpreg', known: true, a1c: 8.2, age: 58, bmi: 25.8, egfr: 78, uacr: 12, met: 'max' },
+    kp: ['metformin 最大劑量失敗：健保可加 SGLT2i、DPP-4i 或 TZD（SGLT2 與 DPP-4 擇一）。', 'GLP-1 RA 健保需再合併用藥 6 個月且 HbA1c >8.5%。', '無心腎共病時依成本、體重、低血糖選擇。'],
+    qs: [
+      { q: '下列哪個加藥目前「健保可以申報」？', o: ['Semaglutide', 'Empagliflozin 或 sitagliptin（擇一）', 'Empagliflozin＋sitagliptin 兩個單方同時開', 'Tirzepatide'], a: 1, e: '5.1 使用條件 2(2)：metformin 最大劑量仍未理想控制可用 SGLT2、DPP-4 或 TZD，但 SGLT2 與 DPP-4 宜二擇一。' },
+      { q: '加 empagliflozin 6 個月後 HbA1c 7.9%，想再加 sitagliptin。健保做法？', o: ['兩個單方並用', '換成 empagliflozin/linagliptin 等複方（metformin 最大劑量＋單方 ≥6 個月＋HbA1c >7.5%）', '改 GLP-1 RA', '不可能給付'], a: 1, e: '5.1.6–5.1.8 複方：metformin 最大劑量，併用其中一成分 ≥6 個月，HbA1c 仍 >7.5%，每日 1 粒。' }
+    ] },
+  { t: '5 · 心肌梗塞後，HbA1c 7.6%', d: '63 歲男性，2 年前急性心肌梗塞接受 PCI。第 2 型糖尿病，metformin 2000 mg/日（最大耐受劑量），HbA1c 7.6%。BMI 27.5，eGFR 70，UACR 20，無心衰竭。',
+    s: { ctx: 'nonpreg', known: true, a1c: 7.6, age: 63, bmi: 27.5, egfr: 70, uacr: 20, met: 'max', ascvd: true, mace: true },
+    kp: ['ASCVD：不論 HbA1c 使用具實證的 GLP-1 RA 和／或 SGLT2i。', '健保 5.1.3.2 第 3 點：重大心血管事件＋metformin 失敗，可直接用 liraglutide、dulaglutide、semaglutide。', 'GLP-1 RA 不得與 SGLT2／DPP-4 併用申報。'],
+    qs: [
+      { q: '依健保，下列哪個可直接申報？', o: ['Semaglutide（不需先用其他口服藥）', '只能先用 DPP-4 抑制劑', 'Tirzepatide', 'Semaglutide＋empagliflozin 同時申報'], a: 0, e: '5.1.3.2 第 3 點：曾心肌梗塞或血管再通術，metformin 最大劑量未控制，可不須使用其他口服藥而使用 liraglutide、dulaglutide 或 semaglutide。' },
+      { q: '指引建議 GLP-1 RA＋SGLT2i 合併以加強心血管保護，健保下怎麼處理？', o: ['兩者都可申報', '依條文第 4 點不得併用，其一需自費或擇一使用', '改用 DPP-4 抑制劑', '改 SU'], a: 1, e: 'GLP-1 RA 條文第 4 點：不得與 DPP-4、SGLT2 併用。' }
+    ] },
+  { t: '6 · 糖尿病腎病變 eGFR 42、UACR 680', d: '66 歲女性，第 2 型糖尿病 15 年合併 CKD。eGFR 42，UACR 680 mg/g，losartan 100 mg（最大耐受劑量）已 6 個月，血鉀 4.6。metformin 1000 mg/日（依腎功能的上限），HbA1c 7.4%。已收案於初期 CKD 照護整合方案。',
+    s: { ctx: 'nonpreg', known: true, a1c: 7.4, age: 66, bmi: 26, egfr: 42, uacr: 680, acearb: true, ckdProg: true, met: 'max' },
+    kp: ['CKD：SGLT2i 是首選（eGFR ≥20 可起始），與 HbA1c 無關。', '健保 2.16 CKD 途徑：eGFR 25–60、UACR 200–5000、ACEI/ARB 最大劑量 ≥4 週、參加照護方案。', 'eGFR 30–44：metformin 每日上限 1000 mg。finerenone 第二節未列條文。'],
+    qs: [
+      { q: 'Dapagliflozin 可依哪一條申報？', o: ['只能依 5.1 糖尿病條件', '2.16 慢性腎臟病途徑（本例全部符合）', '不能申報，eGFR 太低', '需先用 DPP-4 6 個月'], a: 1, e: 'eGFR 42（25–60）、UACR 680（200–5000）、losartan 最大劑量 ≥4 週、已參加初期 CKD 方案、無排除條件：符合 2.16 第 2 點。' },
+      { q: 'Metformin 劑量？', o: ['可增加至 2000 mg', '維持每日最多 1000 mg 並追蹤腎功能', '立即停用', '改成 500 mg qod'], a: 1, e: 'eGFR 30–44 每日上限 1000 mg；<30 停用。' }
+    ] },
+  { t: '7 · HFrEF LVEF 32%', d: '70 歲男性，缺血性心肌病變，LVEF 32%（3 個月前心臟超音波），NYHA II。Ramipril 與 bisoprolol 最大耐受劑量已 3 個月，仍活動喘。第 2 型糖尿病，metformin 最大耐受劑量，HbA1c 7.2%。eGFR 58，UACR 45。',
+    s: { ctx: 'nonpreg', known: true, a1c: 7.2, age: 70, bmi: 24.5, egfr: 58, uacr: 45, met: 'max', hf: true, lvef: 32, nyha2: true, hfMeds: true, acearb: true, ascvd: true, health: 'healthy' },
+    kp: ['心衰竭：SGLT2i 不論 HbA1c 都應使用。', '健保 2.16 心衰竭途徑不要求 metformin 失敗或 HbA1c 門檻。', 'UACR 45 <200：不符 2.16 CKD 途徑，但 HF 途徑已足夠。'],
+    qs: [
+      { q: 'HbA1c 7.2% 已接近目標，還需要 SGLT2i 嗎？', o: ['不需要', '需要：心衰竭的獲益與 HbA1c 無關', '只有 HbA1c >8% 才需要', '改用 pioglitazone'], a: 1, e: 'SGLT2i 降低心衰竭住院與心血管死亡，ADA 不論 HbA1c 皆建議。Pioglitazone 會加重心衰竭。' },
+      { q: '本例健保依據為何？', o: ['2.16 心衰竭途徑（LVEF ≤40%、NYHA II–IV、ACEI/ARB＋β 阻斷劑 ≥4 週）', '2.16 CKD 途徑', '只能自費', '5.1.6 複方'], a: 0, e: 'LVEF 32%、NYHA II、ACEI＋β 阻斷劑最大劑量 ≥4 週仍有症狀：符合 2.16 第 1 點。CKD 途徑因 UACR 45 不符。' }
+    ] },
+  { t: '8 · 84 歲衰弱、反覆低血糖', d: '84 歲女性，獨居、輕度失智，臨床衰弱量表 6。glimepiride 4 mg＋metformin 1000 mg，近 1 個月夜間低血糖 3 次。HbA1c 6.3%，eGFR 48。',
+    s: { ctx: 'nonpreg', known: true, a1c: 6.3, age: 84, bmi: 22, egfr: 48, met: 'max', su: true, health: 'complex', hypoRisk: true },
+    kp: ['複雜健康狀態：目標 HbA1c <8.0%，優先避免低血糖。', 'HbA1c 遠低於目標且用 SU：應降階（停 SU）。', '若停藥後高於目標，可考慮 DPP-4i（linagliptin 不需腎調整）。'],
+    qs: [
+      { q: '最適當的處置？', o: ['加強控制到 HbA1c <6.5%', '停用 glimepiride，目標放寬至 <8.0%', '改用胰島素', '加 SGLT2i'], a: 1, e: 'ADA 第 13 章：使用易致低血糖藥物且 HbA1c 低於個別化目標時應降階；SU 是長者低血糖主要原因之一。' },
+      { q: '停 SU 後 3 個月 HbA1c 8.4%，健保下可加哪一類低血糖風險低的藥？', o: ['DPP-4 抑制劑（metformin 已用至可耐受上限）', 'Glyburide', 'GLP-1 RA 立即申報', 'Tirzepatide'], a: 0, e: '5.1 使用條件 2(2)：metformin 最大耐受劑量仍未理想控制，可用 DPP-4 抑制劑。' }
+    ] },
+  { t: '9 · BMI 36、metformin＋empagliflozin 8 個月', d: '45 歲女性，BMI 36.2，MASLD。第 2 型糖尿病，metformin 2000 mg（最大耐受劑量）＋empagliflozin 10 mg 已 8 個月，HbA1c 9.1%。eGFR 95，UACR 18，無心血管疾病。',
+    s: { ctx: 'nonpreg', known: true, a1c: 9.1, age: 45, bmi: 36.2, egfr: 95, uacr: 18, met: 'max', sglt2: true, addMo: 8, masld: true },
+    kp: ['肥胖、MASLD：GLP-1 RA 或 tirzepatide 優先。', '健保 5.1.3.2 第 1 點：合併用藥 ≥6 個月且 HbA1c >8.5% → 符合。', '但 GLP-1 RA 不得與 SGLT2 併用：申報 GLP-1 須停 empagliflozin，或其一自費。Tirzepatide 未列條文。'],
+    qs: [
+      { q: '健保可以申報 semaglutide 嗎？', o: ['不行，HbA1c 未達 10%', '可以，但開始後 empagliflozin 須停用（或自費）', '可以，且兩者都可續用申報', '只有曾心肌梗塞才可以'], a: 1, e: '符合第 1 點（metformin 最大劑量＋SGLT2 ≥6 個月＋HbA1c 9.1% >8.5%），但第 4 點不得與 SGLT2 併用。' },
+      { q: '病人想用 tirzepatide 減重與控糖，正確說明是？', o: ['健保給付，條件同 semaglutide', '第五節未列給付條文，多為自費；請查健保收載狀態', '禁用於 MASLD', '只適用第 1 型'], a: 1, e: '第五節僅列 exenatide、liraglutide、dulaglutide、lixisenatide、semaglutide 等，未見 tirzepatide 條文。' }
+    ] },
+  { t: '10 · 懷孕 26 週 OGTT 95／172／140', d: '32 歲第一胎，懷孕 26 週，一階段 75 g OGTT：空腹 95、1 小時 172、2 小時 140 mg/dL。孕前 BMI 25。無多尿多喝。',
+    s: { ctx: 'preg', ga: 26, ogMode: 'one', ogF: 95, ogH1: 172, ogH2: 140, age: 32, bmi: 25 },
+    kp: ['一階段 75 g：空腹 ≥92、1 h ≥180、2 h ≥153 任一點即 GDM。', '先醫學營養治療、運動與自我血糖監測；未達標首選胰島素。', '產後 4–12 週 75 g OGTT，之後每 1–3 年篩檢。'],
+    qs: [
+      { q: '診斷為何？', o: ['正常，因為 1 h 與 2 h 都正常', '妊娠糖尿病（空腹 95 ≥92）', '孕前即有的糖尿病', '需要再做 100 g OGTT'], a: 1, e: 'IADPSG 一階段法任一點達門檻即診斷；空腹 95 ≥92。' },
+      { q: '飲食控制 2 週後空腹仍 100–105，首選藥物？', o: ['Metformin', 'Glyburide', '胰島素（如睡前 NPH 或長效類似物）', 'SGLT2 抑制劑'], a: 2, e: 'ADA 第 15 章：胰島素為首選，metformin 與 glyburide 會通過胎盤，不作為首選。' }
+    ] }
+];
+const QK = LS + '-quiz';
+let Q = (() => { try { return JSON.parse(localStorage.getItem(QK)) || {}; } catch (e) { return {}; } })();
+const saveQ = () => { try { localStorage.setItem(QK, JSON.stringify(Q)); } catch (e) {} };
+function renderCases() {
+  $('caseList').innerHTML = CASES.map((c, i) => `<div class="card case"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><h3 style="font-size:15.5px">${esc(c.t)}</h3><span class="sample">示例</span></div>
+    <p class="vig">${esc(c.d)}</p>
+    <div><button class="btn primary sm" type="button" data-case="${i}">載入至引導評估</button></div>
+    <div class="qz">${c.qs.map((q, j) => { const k = i + '-' + j, a = Q[k]; return `<div class="q"><div class="qt">Q${j + 1}. ${esc(q.q)}</div><div class="qo">${q.o.map((o, m) => `<button type="button" data-qa="${k}" data-opt="${m}" ${a !== undefined ? 'disabled' : ''} class="${a !== undefined ? (m === q.a ? 'right' : m === a ? 'wrong' : '') : ''}">${'ABCD'[m]}. ${esc(o)}</button>`).join('')}</div>${a !== undefined ? `<div class="qe">${a === q.a ? '答對。' : `正確答案 ${'ABCD'[q.a]}。`}${esc(q.e)}</div>` : ''}</div>`; }).join('')}</div>
+    <details class="more"><summary>學習重點</summary><ul class="plain kp">${c.kp.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>
+  </div>`).join('');
+  const tot = CASES.reduce((n, c) => n + c.qs.length, 0), ans = Object.keys(Q).length;
+  const ok = Object.entries(Q).filter(([k, v]) => { const [i, j] = k.split('-').map(Number); return CASES[i] && CASES[i].qs[j] && CASES[i].qs[j].a === v; }).length;
+  $('scoreBox').textContent = `已作答 ${ans}／${tot}，答對 ${ok}`;
+}
+function answer(k, m) { if (Q[k] !== undefined) return; Q[k] = m; saveQ(); renderCases(); }
+function loadCase(i) {
+  const c = CASES[i];
+  S = Object.assign(blank(), JSON.parse(JSON.stringify(c.s)));
+  renderAll(); showTab('ws'); window.scrollTo({ top: 0 }); toast('已載入：' + c.t);
+}
+
+$('nhiVer').textContent = DM.NHI_VER;
+renderSheet(); renderAll(); renderCases();
+(() => { let t = 'ws'; try { t = localStorage.getItem(LS + '-tab') || 'ws'; } catch (e) {} showTab(TABS.includes(t) ? t : 'ws'); })();
+</script>
+</body>
+</html>
